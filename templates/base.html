@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PC Shop{% endblock %}</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-6xl mx-auto px-4 py-6">
+
+    <div class="flex items-center justify-between mb-6">
+      <div class="text-xl font-semibold">PC Shop</div>
+      <nav class="flex gap-3 text-sm">
+        <a class="px-3 py-2 rounded bg-white shadow-sm hover:bg-slate-100" href="{% url 'inventory_list' %}">Склад</a>
+        <a class="px-3 py-2 rounded bg-white shadow-sm hover:bg-slate-100" href="{% url 'build_list' %}">Сборки</a>
+        <a class="px-3 py-2 rounded bg-white shadow-sm hover:bg-slate-100" href="{% url 'sale_list' %}">Продажи</a>
+      </nav>
+    </div>
+
+    {% include "_messages.html" %}
+
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Склад{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-lg font-semibold">Склад</h1>
+  <a class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'inventory_add' %}">+ Добавить товар</a>
+</div>
+
+<form class="bg-white shadow-sm rounded p-3 mb-4 flex flex-wrap gap-3 items-end" method="get">
+  <div>
+    <div class="text-xs text-slate-500 mb-1">Поиск</div>
+    <input name="q" value="{{ request.GET.q }}" class="border rounded px-2 py-1 w-64" placeholder="например: 4060, 1TB, i5">
+  </div>
+  <div>
+    <div class="text-xs text-slate-500 mb-1">Статус</div>
+    <input name="status" value="{{ request.GET.status }}" class="border rounded px-2 py-1" placeholder="in_stock">
+  </div>
+  <div>
+    <div class="text-xs text-slate-500 mb-1">Категория</div>
+    <input name="category" value="{{ request.GET.category }}" class="border rounded px-2 py-1" placeholder="gpu/ssd/etc">
+  </div>
+  <button class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" type="submit">Фильтр</button>
+</form>
+
+<div class="bg-white shadow-sm rounded overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-100">
+      <tr>
+        <th class="text-left p-3">Товар</th>
+        <th class="text-left p-3">Категория</th>
+        <th class="text-left p-3">Статус</th>
+        <th class="text-right p-3">Закупка</th>
+        <th class="p-3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in items %}
+        <tr class="border-t">
+          <td class="p-3">
+            <div class="font-medium">{{ it.name }}</div>
+            {% if it.serial_number %}<div class="text-xs text-slate-500">S/N: {{ it.serial_number }}</div>{% endif %}
+          </td>
+          <td class="p-3">{{ it.get_category_display }}</td>
+          <td class="p-3">{{ it.get_status_display }}</td>
+          <td class="p-3 text-right">{{ it.purchase_price }}</td>
+          <td class="p-3 text-right">
+            <a class="px-3 py-1 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'inventory_edit' it.id %}">Редакт.</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td class="p-3" colspan="5">Пока пусто.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

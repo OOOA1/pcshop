@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Сборки{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-lg font-semibold">Сборки</h1>
+  <a class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'build_add' %}">+ Создать сборку</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {% for b in builds %}
+    <a href="{% url 'build_detail' b.id %}" class="bg-white shadow-sm rounded overflow-hidden hover:ring-2 hover:ring-slate-200">
+      {% if b.cover_image %}
+        <img src="{{ b.cover_image.url }}" class="w-full h-48 object-cover" />
+      {% endif %}
+      <div class="p-4">
+        <div class="font-semibold">{{ b.title }}</div>
+        <div class="text-sm text-slate-600">{{ b.get_status_display }}</div>
+        <div class="text-sm mt-2">Себестоимость: <span class="font-medium">{{ b.cost }}</span></div>
+      </div>
+    </a>
+  {% empty %}
+    <div class="text-slate-600">Пока нет сборок.</div>
+  {% endfor %}
+</div>
+
+{% endblock %}

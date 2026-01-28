@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Записать продажу{% endblock %}
+{% block content %}
+
+<div class="bg-white shadow-sm rounded p-4 max-w-2xl">
+  <h1 class="text-lg font-semibold mb-4">Записать продажу</h1>
+
+  <form method="post" class="space-y-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" type="submit">Сохранить</button>
+  </form>
+
+  <div class="text-xs text-slate-500 mt-3">
+    После сохранения сборка и все товары внутри автоматически станут “Продан”.
+  </div>
+</div>
+
+{% endblock %}
