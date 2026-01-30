@@ -1,5 +1,6 @@
 from django import forms
 from .models import InventoryItem, Build, BuildItem, Sale, Consumable, BuildConsumable, PurchasePlan
+from django.utils import timezone
 
 class InventoryItemForm(forms.ModelForm):
     class Meta:
@@ -45,10 +46,24 @@ class SaleForm(forms.ModelForm):
             "sold_at": "Дата_и_время_сделки",
             "notes": "Комментарий_к_продаже",
         }
+        widgets = {
+            'sold_at': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'w-full p-3 rounded-xl bg-slate-50 border-none font-mono text-sm'
+                },
+                format='%Y-%m-%dT%H:%M'
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Показываем только те сборки, которые еще не проданы
         self.fields['build'].queryset = Build.objects.exclude(status="sold")
+        
+        # АВТО-ДАТА: Если форма пустая (создание), ставим текущее время
+        if not self.instance.pk:
+            self.fields['sold_at'].initial = timezone.now()
 
 class ConsumableForm(forms.ModelForm):
     class Meta:

@@ -25,7 +25,7 @@ class InventoryCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        # Если перешли из списка покупок, подставляем имя
+        # Подтягиваем данные из ссылки
         name = self.request.GET.get('name')
         price = self.request.GET.get('price')
         if name:
@@ -33,6 +33,18 @@ class InventoryCreateView(CreateView):
         if price:
             initial['purchase_price'] = price
         return initial
+
+    def form_valid(self, form):
+        # Это срабатывает, когда ты нажал "Сохранить" и всё заполнено верно
+        response = super().form_valid(form)
+        
+        # Проверяем, был ли передан ID покупки
+        purchase_id = self.request.GET.get('purchase_id')
+        if purchase_id:
+            # Если да — удаляем эту заметку из списка "Купить"
+            PurchasePlan.objects.filter(id=purchase_id).delete()
+            
+        return response
 
 class InventoryUpdateView(UpdateView):
     model = InventoryItem

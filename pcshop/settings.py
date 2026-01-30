@@ -105,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Измени эти параметры для поддержки русского языка в админке и датах
 LANGUAGE_CODE = 'ru-ru'
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'Asia/Yekaterinburg'
 
 USE_I18N = True
 

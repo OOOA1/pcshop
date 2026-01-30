@@ -43,6 +43,7 @@ class Build(models.Model):
     cover_image = models.ImageField(upload_to="builds/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=BuildStatus.choices, default=BuildStatus.DRAFT)
     created_at = models.DateTimeField(auto_now_add=True)
+    work_hours = models.DecimalField(max_digits=5, decimal_places=1, default=0, verbose_name="Затрачено часов")
 
     @property
     def cost(self):
