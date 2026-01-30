@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
-
 {% block title %}История продаж | PC Upgrade{% endblock %}
-
 {% block content %}
-
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
   <div class="text-center md:text-left">
     <h1 class="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter italic">
@@ -28,10 +25,10 @@
         <table class="w-full text-sm font-mono text-left min-w-[600px]">
             <thead class="text-[10px] text-slate-300 uppercase bg-slate-900 border-b border-slate-800">
                 <tr>
-                    <th scope="col" class="px-6 py-4 font-bold italic tracking-widest">Дата</th>
-                    <th scope="col" class="px-6 py-4 font-bold italic tracking-widest">Сборка</th>
-                    <th scope="col" class="px-6 py-4 font-bold italic tracking-widest text-right">Продано за</th>
-                    <th scope="col" class="px-6 py-4 font-bold italic tracking-widest text-right">Чистая прибыль</th>
+                    <th class="px-6 py-4 font-bold italic tracking-widest">Дата</th>
+                    <th class="px-6 py-4 font-bold italic tracking-widest">Объект продажи</th>
+                    <th class="px-6 py-4 font-bold italic tracking-widest text-right">Продано за</th>
+                    <th class="px-6 py-4 font-bold italic tracking-widest text-right">Прибыль</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -42,34 +39,25 @@
                         <span class="block text-[9px] text-slate-400">{{ sale.sold_at|date:"H:i" }}</span>
                     </td>
                     <td class="px-6 py-4">
-                        <span class="font-black text-slate-900 block">{{ sale.build.title }}</span>
-                        <a href="{% url 'build_detail' sale.build.id %}" class="text-[10px] text-indigo-500 hover:underline">#PROJECT_{{ sale.build.id }}</a>
-                        {% if sale.notes %}
-                            <p class="text-[10px] text-slate-400 mt-1 italic max-w-xs truncate">{{ sale.notes }}</p>
+                        {% if sale.build %}
+                            <span class="font-black text-slate-900 block">{{ sale.build.title }}</span>
+                            <a href="{% url 'build_detail' sale.build.id %}" class="text-[10px] text-indigo-500 hover:underline">#PROJECT_{{ sale.build.id }}</a>
+                            <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 uppercase tracking-widest">PC BUILD</span>
+                        {% elif sale.item %}
+                            <span class="font-black text-slate-900 block">{{ sale.item.name }}</span>
+                            <span class="text-[10px] text-slate-400 block font-mono">SN: {{ sale.item.serial_number|default:"N/A" }}</span>
+                            <span class="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest">COMPONENT</span>
                         {% endif %}
+                        {% if sale.notes %}<p class="text-[10px] text-slate-400 mt-1 italic max-w-xs truncate">{{ sale.notes }}</p>{% endif %}
                     </td>
-                    <td class="px-6 py-4 text-right font-bold text-slate-900">
-                        {{ sale.sold_price }} ₽
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg font-bold text-xs border border-green-200">
-                            +{{ sale.profit }} ₽
-                        </span>
-                    </td>
+                    <td class="px-6 py-4 text-right font-bold text-slate-900">{{ sale.sold_price }} ₽</td>
+                    <td class="px-6 py-4 text-right"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg font-bold text-xs border border-green-200">+{{ sale.profit }} ₽</span></td>
                 </tr>
                 {% empty %}
-                <tr>
-                    <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic">
-                        <div class="flex flex-col items-center justify-center gap-3">
-                            <!-- <span class="text-2xl">💸</span> -->
-                            <span>Продаж пока, вы нищета сраная</span>
-                        </div>
-                    </td>
-                </tr>
+                <tr><td colspan="4" class="px-6 py-12 text-center text-slate-400 italic">Продаж пока не было</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
 {% endblock %}

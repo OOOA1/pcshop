@@ -27,7 +27,7 @@
           </div>
           <div>
             <span class="text-xl md:text-2xl font-black tracking-tighter text-slate-900 uppercase italic">PC<span class="text-indigo-600">Upgrade</span></span>
-            <!-- <p class="text-[10px] font-mono text-slate-400 font-bold leading-none uppercase tracking-widest mt-0.5 md:mt-1">v2.2_mobile</p> -->
+            <p class="text-[10px] font-mono text-slate-400 font-bold leading-none uppercase tracking-widest mt-0.5 md:mt-1">v2.3_final</p>
           </div>
         </div>
 
@@ -95,7 +95,6 @@
   </div>
 
   <script>
-    // Логика бургер-меню
     const burgerBtn = document.getElementById('burger-btn');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -103,7 +102,6 @@
         mobileMenu.classList.toggle('hidden');
     });
 
-    // Закрыть меню при клике вне его
     document.addEventListener('click', (e) => {
         if (!burgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
             mobileMenu.classList.add('hidden');

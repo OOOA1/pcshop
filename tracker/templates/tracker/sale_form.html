@@ -1,62 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Фиксация_сделки{% endblock %}
+{% block title %}Оформление продажи | PC Upgrade{% endblock %}
 {% block content %}
-
 <div class="max-w-2xl mx-auto">
-  <div class="text-center mb-10">
-    <div class="inline-block p-3 bg-green-50 rounded-2xl mb-4 border border-green-100">
-      <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-    </div>
-    <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">Подтверждение продажи</h1>
-    <p class="text-slate-500 font-mono text-[10px] uppercase mt-1">Status: Проверка данных...</p>
+  <div class="mb-8 text-center md:text-left">
+    <h1 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+      <span class="text-indigo-600">></span> 
+      {% if selling_item_name %}
+          Продажа детали: {{ selling_item_name }}
+      {% else %}
+          Оформление сделки
+      {% endif %}
+    </h1>
+    <p class="text-slate-500 font-mono text-[10px] mt-1 uppercase">/root/sales/new_transaction</p>
   </div>
-
-  <div class="bg-white rounded-3xl border border-slate-100 shadow-2xl overflow-hidden border-t-4 border-t-green-500">
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
     <form method="post" class="p-8 space-y-6">
       {% csrf_token %}
-      
-      <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 font-mono">Целевой объект</label>
-        {{ form.build }}
+      {{ form.as_p }}
+      <div class="pt-6 border-t border-slate-50 flex justify-between">
+        <a href="{% url 'sale_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono mt-3 block">Отмена</a>
+        <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase hover:bg-indigo-700 transition-all shadow-lg">Подтвердить продажу</button>
       </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Цена реализации</label>
-          {{ form.sold_price }}
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Комиссии сервиса</label>
-          {{ form.fees }}
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Дата транзакции</label>
-        {{ form.sold_at }}
-      </div>
-
-      <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Комментарий</label>
-        {{ form.notes }}
-      </div>
-
-      <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase hover:bg-green-600 transition-all shadow-xl flex items-center justify-center gap-3">
-        Завершить сделку
-      </button>
     </form>
   </div>
 </div>
-
-<style>
-  input, select, textarea {
-    width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
-    padding: 0.875rem 1.25rem; font-family: ui-monospace, monospace; font-size: 0.875rem;
-    outline: none; transition: all 0.2s;
-  }
-  input:focus, select:focus, textarea:focus {
-    background: white; border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-  }
-</style>
-
 {% endblock %}

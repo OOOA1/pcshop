@@ -80,7 +80,12 @@ class BuildItem(models.Model):
     qty = models.PositiveIntegerField(default=1)
 
 class Sale(models.Model):
-    build = models.OneToOneField(Build, on_delete=models.CASCADE, related_name="sale_record")
+    # Теперь ссылка на сборку может быть пустой
+    build = models.ForeignKey(Build, on_delete=models.CASCADE, related_name="sale_record", null=True, blank=True)
+    
+    # Новое поле: ссылка на деталь (для продажи по частям)
+    item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name="sale_record", null=True, blank=True)
+    
     sold_price = models.DecimalField(max_digits=10, decimal_places=2)
     fees = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     sold_at = models.DateTimeField()
@@ -88,17 +93,31 @@ class Sale(models.Model):
 
     @property
     def profit(self):
-        return self.sold_price - self.fees - self.build.cost
+        # Если продана сборка
+        if self.build:
+            return self.sold_price - self.fees - self.build.cost
+        # Если продана деталь
+        elif self.item:
+            return self.sold_price - self.fees - self.item.purchase_price
+        return 0
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
+        
         if is_new:
-            self.build.status = BuildStatus.SOLD
-            self.build.save()
-            for bi in self.build.build_items.all():
-                bi.item.status = ItemStatus.SOLD
-                bi.item.save()
+            # Логика для сборки
+            if self.build:
+                self.build.status = BuildStatus.SOLD
+                self.build.save()
+                for bi in self.build.build_items.all():
+                    bi.item.status = ItemStatus.SOLD
+                    bi.item.save()
+            
+            # Логика для отдельной детали
+            elif self.item:
+                self.item.status = ItemStatus.SOLD
+                self.item.save()
 
 class Consumable(models.Model):
     name = models.CharField(max_length=200)
