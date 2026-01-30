@@ -3,44 +3,51 @@
 {% block content %}
 
 <div class="space-y-12">
+  <header>
+    <h1 class="text-3xl font-black text-slate-900 uppercase tracking-tighter italic">
+      <span class="text-indigo-600">></span> Archive_Database
+    </h1>
+    <p class="text-slate-400 font-mono text-[10px] mt-1 uppercase italic font-bold">Реестр завершенных циклов сборки и реализации</p>
+  </header>
+
   <section>
-    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter mb-6 italic">
-      <span class="text-indigo-600">#</span> Сборки_Архив
-    </h2>
-    
+    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 font-mono italic">_Sold_Builds [Сборки]</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for b in sold_builds %}
         <div onclick="openModal('modal-{{ b.id }}')" class="cursor-pointer group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm grayscale-[0.5] hover:grayscale-0 hover:border-indigo-300 transition-all">
           <div class="flex justify-between items-start mb-2">
-            <span class="text-[10px] font-mono text-indigo-500 font-bold uppercase">Завершено</span>
-            <span class="text-[10px] font-mono text-slate-400">#{{ b.id }}</span>
+            <span class="text-[10px] font-mono text-indigo-500 font-bold uppercase tracking-widest">Completed</span>
+            <span class="text-[10px] font-mono text-slate-300">#{{ b.id }}</span>
           </div>
-          <h3 class="font-bold text-slate-800 group-hover:text-indigo-600">{{ b.title }}</h3>
-          <p class="text-xs text-slate-400 mt-2 font-mono">Себестоимость: {{ b.cost }} ₽</p>
+          <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 text-lg transition-colors">{{ b.title }}</h3>
+          <p class="text-xs text-slate-400 mt-2 font-mono italic">Cost_Base: {{ b.cost }} ₽</p>
         </div>
 
         <div id="modal-{{ b.id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4" onclick="closeModal('modal-{{ b.id }}')">
-          <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+          <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
             <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
-              <h2 class="text-xl font-black uppercase tracking-tight">{{ b.title }}</h2>
-              <button onclick="closeModal('modal-{{ b.id }}')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+              <div>
+                <h2 class="text-xl font-black uppercase tracking-tight">{{ b.title }}</h2>
+                <p class="text-[10px] font-mono text-slate-400 uppercase mt-1">Build_Specification_ID: {{ b.id }}</p>
+              </div>
+              <button onclick="closeModal('modal-{{ b.id }}')" class="text-slate-400 hover:text-white transition-colors text-3xl font-light">&times;</button>
             </div>
             
             <div class="p-8 space-y-6">
               {% if b.cover_image %}
-                <img src="{{ b.cover_image.url }}" class="w-full h-48 object-cover rounded-2xl">
+                <img src="{{ b.cover_image.url }}" class="w-full h-48 object-cover rounded-2xl border border-slate-50">
               {% endif %}
               
               <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">_Состав_системы</label>
-                <div class="mt-3 border rounded-xl overflow-hidden">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono italic">_Состав_системы</label>
+                <div class="mt-3 border border-slate-100 rounded-2xl overflow-hidden shadow-inner">
                   <table class="w-full text-xs font-mono text-left">
-                    <tbody class="divide-y">
+                    <tbody class="divide-y divide-slate-50">
                       {% for bi in b.build_items.all %}
                         <tr>
-                          <td class="p-3 bg-slate-50 text-slate-500">{{ bi.item.get_category_display }}</td>
-                          <td class="p-3 font-bold">{{ bi.item.name }}</td>
-                          <td class="p-3 text-right">x{{ bi.qty }}</td>
+                          <td class="p-4 bg-slate-50/50 text-slate-400 uppercase text-[10px] font-bold italic">{{ bi.item.get_category_display }}</td>
+                          <td class="p-4 font-bold text-slate-700">{{ bi.item.name }}</td>
+                          <td class="p-4 text-right font-bold text-indigo-600">x{{ bi.qty }}</td>
                         </tr>
                       {% endfor %}
                     </tbody>
@@ -48,14 +55,41 @@
                 </div>
               </div>
 
-              <div class="pt-4 border-t flex justify-between items-center">
-                <span class="text-xs font-bold text-slate-400 font-mono uppercase">Итоговая_стоимость:</span>
-                <span class="text-2xl font-black text-indigo-600 font-mono">{{ b.cost }} ₽</span>
+              <div class="pt-6 border-t border-slate-50 flex justify-between items-center">
+                <span class="text-[10px] font-bold text-slate-400 font-mono uppercase tracking-widest">Итоговая_себестоимость:</span>
+                <span class="text-2xl font-black text-indigo-600 font-mono italic">{{ b.cost }} ₽</span>
               </div>
             </div>
           </div>
         </div>
+      {% empty %}
+        <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-100 opacity-60">
+           <p class="text-slate-400 font-medium font-mono text-xs uppercase italic"># No_sold_builds_in_history</p>
+        </div>
       {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 font-mono italic">_Sold_Items [Отдельные_детали]</h2>
+    <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <table class="w-full text-left font-mono text-xs">
+        <tbody class="divide-y divide-slate-50">
+          {% for it in sold_items %}
+            <tr class="opacity-60 hover:opacity-100 transition-opacity">
+              <td class="px-6 py-4 font-bold text-slate-700">{{ it.name }}</td>
+              <td class="px-6 py-4 text-slate-400 uppercase italic">/{{ it.get_category_display }}</td>
+              <td class="px-6 py-4 text-right text-indigo-600 font-bold font-mono">{{ it.purchase_price }} ₽</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td class="p-12 text-center text-slate-300 font-mono text-[10px] uppercase italic tracking-widest" colspan="3">
+                No_separate_items_sold_yet
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </section>
 </div>
@@ -69,7 +103,6 @@
     document.getElementById(id).classList.add('hidden');
     document.body.style.overflow = 'auto';
   }
-  // Закрытие по Esc
   document.onkeydown = function(e) {
     if (e.key === "Escape") {
       document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));

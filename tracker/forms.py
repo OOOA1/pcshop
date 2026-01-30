@@ -1,8 +1,5 @@
 from django import forms
-from django.utils import timezone
-
-from .models import InventoryItem, Build, Sale, ItemStatus, BuildStatus
-
+from .models import InventoryItem, Build, BuildItem, Sale, Consumable
 
 class InventoryItemForm(forms.ModelForm):
     class Meta:
@@ -17,7 +14,6 @@ class InventoryItemForm(forms.ModelForm):
             "notes": "Технические_заметки",
             "photo": "Изображение_юнита",
         }
-        widgets = {"notes": forms.Textarea(attrs={"rows": 3})}
 
 class BuildForm(forms.ModelForm):
     class Meta:
@@ -30,34 +26,45 @@ class BuildForm(forms.ModelForm):
             "cover_image": "Фронтальное_фото",
             "status": "Статус_проекта",
         }
-        widgets = {"description": forms.Textarea(attrs={"rows": 4})}
-
 
 class AddItemToBuildForm(forms.Form):
     item = forms.ModelChoiceField(
-        queryset=InventoryItem.objects.filter(status=ItemStatus.IN_STOCK).order_by("category", "name"),
-        label="Товар со склада",
+        queryset=InventoryItem.objects.filter(status="in_stock"),
+        label="Выбор_юнита"
     )
-    qty = forms.IntegerField(min_value=1, initial=1, label="Количество")
-
+    qty = forms.IntegerField(min_value=1, initial=1, label="QTY")
 
 class SaleForm(forms.ModelForm):
     class Meta:
-            model = Sale
-            fields = ["build", "sold_price", "fees", "sold_at", "notes"]
-            labels = {
-                "build": "Выбор_сборки",
-                "sold_price": "Итоговая_цена_продажи",
-                "fees": "Налоги_и_комиссии",
-                "sold_at": "Дата_и_время_сделки",
-                "notes": "Комментарий_к_продаже",
-            }
+        model = Sale
+        fields = ["build", "sold_price", "fees", "sold_at", "notes"]
+        labels = {
+            "build": "Выбор_сборки",
+            "sold_price": "Итоговая_цена_продажи",
+            "fees": "Налоги_и_комиссии",
+            "sold_at": "Дата_и_время_сделки",
+            "notes": "Комментарий_к_продаже",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Показываем только те сборки, которые еще не проданы
+        self.fields['build'].queryset = Build.objects.exclude(status="sold")
 
-        qs = Build.objects.exclude(status=BuildStatus.SOLD).filter(sale__isnull=True).order_by("-created_at")
-        self.fields["build"].queryset = qs
+class ConsumableForm(forms.ModelForm):
+    class Meta:
+        model = Consumable
+        fields = ["name", "purchase_price", "quantity", "notes"]
+        labels = {
+            "name": "Наименование_материала",
+            "purchase_price": "Стоимость_закупа",
+            "quantity": "Количество",
+            "notes": "Заметки_по_кастому",
+        }
 
-        if not self.initial.get("sold_at") and not self.instance.pk:
-            self.initial["sold_at"] = timezone.now().strftime("%Y-%m-%dT%H:%M")
+class AddConsumableToBuildForm(forms.Form):
+    consumable = forms.ModelChoiceField(
+        queryset=Consumable.objects.filter(quantity__gt=0),
+        label="Материал"
+    )
+    qty_used = forms.IntegerField(min_value=1, initial=1, label="Кол-во")

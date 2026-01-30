@@ -1,121 +1,224 @@
-{% extends "base.html" %}
-{% block title %}{{ build.title }} | Спецификация{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Сборка: {{ build.title }}{% endblock %}
+
 {% block content %}
-
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <div class="lg:col-span-2 space-y-8">
-    <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden border border-slate-800">
-      <div class="relative z-10">
-        <div class="flex items-center gap-3 mb-4">
-          <span class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-widest border border-indigo-500/30">
-            {{ build.get_status_display }}
-          </span>
-          <span class="text-slate-500 font-mono text-[10px]">ID: {{ build.id }}</span>
-        </div>
-        <h1 class="text-4xl font-black mb-4">{{ build.title }}</h1>
-        <p class="text-slate-400 text-sm leading-relaxed max-w-prose italic">{{ build.description|default:"Описание отсутствует" }}</p>
-      </div>
-      <div class="absolute -right-10 -bottom-10 text-slate-800 font-mono text-[120px] font-black opacity-20 select-none uppercase">
-        Build
-      </div>
-    </div>
-
-    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden font-mono">
-      <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-        <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest italic">_Спецификация_компонентов</h2>
-      </div>
-      <table class="w-full text-sm">
-        <tbody class="divide-y divide-slate-50">
-          {% for bi in build_items %}
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-6 py-4">
-                <span class="text-[10px] font-mono text-slate-400 block mb-1 uppercase tracking-tighter">{{ bi.item.get_category_display }}</span>
-                <span class="font-bold text-slate-800">{{ bi.item.name }}</span>
-              </td>
-              <td class="px-6 py-4 font-mono text-slate-500 text-center">x{{ bi.qty }}</td>
-              <td class="px-6 py-4 text-right font-mono font-bold text-slate-900">{{ bi.item.purchase_price }}</td>
-              <td class="px-6 py-4 text-right">
-                <a class="text-red-400 hover:text-red-600 transition-colors" href="{% url 'build_remove_item' build.id bi.item.id %}">
-                   <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </a>
-              </td>
-            </tr>
-          {% empty %}
-            <tr><td class="p-10 text-center text-slate-400 italic font-mono uppercase text-[10px]" colspan="4">DATABASE_EMPTY: Компоненты не обнаружены.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="space-y-6">
-    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-      <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 italic font-mono">_Анализ_стоимости</label>
-      <div class="text-5xl font-black text-slate-900 font-mono tracking-tighter mb-1">{{ build.cost }}<span class="text-lg text-indigo-500 font-normal ml-1">₽</span></div>
-      <p class="text-[10px] text-slate-400 font-medium font-mono uppercase tracking-tighter">Суммарная себестоимость юнитов</p>
-      <div class="mt-6 pt-6 border-t border-slate-50">
-         <a class="block w-full text-center py-3 rounded-xl bg-slate-100 text-slate-600 font-bold hover:bg-slate-200 transition-colors text-[10px] uppercase font-mono tracking-widest" href="{% url 'build_edit' build.id %}">Edit_Project [Править]</a>
-      </div>
-    </div>
-
-    <div class="bg-indigo-600 rounded-3xl p-6 text-white shadow-xl shadow-indigo-200 border border-indigo-500">
-      <h3 class="text-[10px] font-bold uppercase tracking-widest mb-6 opacity-80 italic font-mono">_Добавление_компонента</h3>
-      <form method="post" class="space-y-6">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="add_item">
+    
+    <div class="lg:col-span-2 space-y-8">
         
-        <div class="space-y-2">
-            <label class="text-[10px] uppercase font-bold text-indigo-200 font-mono italic tracking-widest">Выбор_юнита</label>
-            <div class="relative text-slate-900">
-              {{ add_form.item }}
+        <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden border border-slate-800">
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-widest border border-indigo-500/30">
+                        {{ build.get_status_display }}
+                    </span>
+                    <span class="text-slate-500 font-mono text-[10px]">ID_PROJECT: {{ build.id }}</span>
+                </div>
+                <h1 class="text-4xl font-black mb-2 tracking-tighter uppercase italic">{{ build.title }}</h1>
+                <p class="text-slate-400 text-sm italic">{{ build.description|default:"Описание конфигурации отсутствует" }}</p>
+            </div>
+            <div class="absolute -right-10 -bottom-10 text-slate-800 font-mono text-[120px] font-black opacity-20 select-none uppercase">
+                BUILD
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3 items-end font-mono">
-            <div class="col-span-1 space-y-2 text-slate-900">
-                <label class="text-[10px] uppercase font-bold text-indigo-200 block tracking-widest">QTY</label>
-                {{ add_form.qty }}
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden font-mono">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h2 class="text-xs font-bold uppercase tracking-widest italic text-slate-500">Комплектующие в сборке</h2>
+                <span class="text-[10px] text-slate-400">Units: {{ build_items.count }}</span>
             </div>
-            <button class="col-span-2 h-[46px] bg-white text-indigo-600 rounded-xl font-black text-[10px] uppercase hover:bg-indigo-50 transition-all shadow-lg active:scale-95 tracking-widest" type="submit">
-              Deploy_Unit
-            </button>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-[10px] uppercase text-slate-400 border-b border-slate-50">
+                            <th class="px-6 py-4 font-bold">Компонент</th>
+                            <th class="px-6 py-4 text-center font-bold">Кол-во</th>
+                            <th class="px-6 py-4 text-right font-bold">Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        {% for bi in build_items %}
+                        <tr class="hover:bg-slate-50 transition-colors group">
+                            <td class="px-6 py-4">
+                                <span class="text-[10px] text-indigo-400 block mb-0.5">{{ bi.item.get_category_display }}</span>
+                                <span class="font-bold text-slate-800">{{ bi.item.name }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-slate-500 italic font-bold">x{{ bi.qty }}</td>
+                            <td class="px-6 py-4 text-right font-bold text-slate-900">{{ bi.item.purchase_price }} ₽</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-12 text-center text-slate-300 italic text-xs uppercase tracking-widest">
+                                # No_hardware_mounted_yet
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </form>
+
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden font-mono">
+            <div class="px-6 py-4 bg-indigo-600 text-white flex justify-between items-center shadow-lg shadow-indigo-100">
+                <h2 class="text-xs font-bold uppercase tracking-widest italic">Материалы на кастом</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-[10px] uppercase text-slate-300 border-b border-slate-50">
+                            <th class="px-6 py-4 font-bold">Материал</th>
+                            <th class="px-6 py-4 text-center font-bold">Расход</th>
+                            <th class="px-6 py-4 text-right font-bold">Прайс</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        {% for cm in custom_materials %}
+                        <tr class="hover:bg-indigo-50/50 transition-colors">
+                            <td class="px-6 py-4 font-bold text-slate-800">{{ cm.consumable.name }}</td>
+                            <td class="px-6 py-4 text-center text-slate-500 italic font-bold">x{{ cm.qty_used }}</td>
+                            <td class="px-6 py-4 text-right font-bold text-indigo-600">{{ cm.consumable.purchase_price }} ₽</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-10 text-center text-slate-300 italic text-xs uppercase tracking-widest">
+                                # No_customization_applied
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="space-y-6">
+        
+        <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">Общая стоимость сборки</label>
+            <div class="text-5xl font-black text-slate-900 tracking-tighter font-mono">
+                {{ build.cost }}<span class="text-xl text-indigo-500 ml-1">₽</span>
+            </div>
+        </div>
+
+        {% if build.status != 'sold' %}
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+            <h3 class="text-[10px] font-bold uppercase tracking-widest mb-6 text-slate-400 italic font-mono flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span> Добавить комплектующие
+            </h3>
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_item">
+                
+                <div class="form-group">
+                    <label class="text-[10px] uppercase font-bold text-slate-400 block mb-2 ml-1 font-mono tracking-tighter">Выбрать_комплектующую</label>
+                    <div class="custom-select-wrapper">
+                        {{ add_form.item }}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-1">
+                        <label class="text-[10px] uppercase font-bold text-slate-400 block mb-2 ml-1 font-mono">штук</label>
+                        {{ add_form.qty }}
+                    </div>
+                    <div class="col-span-2 flex items-end">
+                        <button type="submit" class="w-full h-[46px] bg-slate-900 text-white rounded-xl font-bold text-[10px] uppercase hover:bg-slate-800 transition-all font-mono italic">
+                            Добавить деталь
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-700">
+            <h3 class="text-[10px] font-bold uppercase tracking-widest mb-6 text-indigo-400 italic font-mono flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> Добавить кастом
+            </h3>
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_custom">
+                
+                <div class="form-group">
+                    <label class="text-[10px] uppercase font-bold text-slate-500 block mb-2 ml-1 font-mono tracking-tighter">Материал_кастомизации</label>
+                    <div class="custom-select-wrapper dark-select">
+                        {{ custom_form.consumable }}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-1">
+                        <label class="text-[10px] uppercase font-bold text-slate-500 block mb-2 ml-1 font-mono">штук</label>
+                        <div class="dark-input">
+                            {{ custom_form.qty_used }}
+                        </div>
+                    </div>
+                    <div class="col-span-2 flex items-end">
+                        <button type="submit" class="w-full h-[46px] bg-indigo-600 text-white rounded-xl font-black text-[10px] uppercase hover:bg-indigo-500 transition-all font-mono italic shadow-lg shadow-indigo-900/40">
+                            Добавить материал
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <a href="{% url 'sale_add' %}?build_id={{ build.id }}" class="block w-full bg-green-500 hover:bg-green-600 text-white text-center py-5 rounded-3xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-green-900/10 transition-all transform hover:-translate-y-1">
+            Завершить сборку
+        </a>
+        {% endif %}
+    </div>
 </div>
 
 <style>
-  /* Глобальное исправление для всех select в проекте */
-  select, input, textarea {
-    width: 100%;
-    background-color: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 0.75rem !important;
-    padding: 0.75rem 1rem !important;
-    font-family: ui-monospace, monospace !important;
-    font-size: 0.875rem !important;
-    color: #1e293b !important; /* Гарантируем темный текст */
-    outline: none !important;
-    appearance: none; /* Убираем стандартную стрелку браузера для чистого вида */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
-  }
+    /* Базовые стили для всех инпутов и селектов в формах */
+    input, select {
+        width: 100% !important;
+        height: 46px !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        padding: 0 1rem !important;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+        font-size: 0.8125rem !important;
+        color: #1e293b !important;
+        outline: none !important;
+        transition: all 0.2s !important;
+        appearance: none !important; /* Убираем стандартную стрелку */
+    }
 
-  /* Исправление "белого на белом" в выпадающем списке */
-  select option {
-    background-color: white !important;
-    color: #1e293b !important;
-    padding: 10px;
-  }
+    /* Стили для выпадающих списков (добавляем кастомную стрелку) */
+    select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        background-size: 1rem !important;
+        padding-right: 2.5rem !important;
+    }
 
-  input:focus, select:focus {
-    background-color: white !important;
-    border-color: #4f46e5 !important;
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
-  }
+    /* Фокус */
+    input:focus, select:focus {
+        border-color: #6366f1 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+    }
+
+    /* Инпуты внутри темной формы (Кастом) */
+    .dark-input input, .dark-select select {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    .dark-input input:focus, .dark-select select:focus {
+        background-color: #0f172a !important;
+        border-color: #818cf8 !important;
+    }
+
+    /* Исправление отображения опций внутри селекта */
+    select option {
+        background-color: #ffffff;
+        color: #1e293b;
+        padding: 10px;
+    }
 </style>
-
 {% endblock %}

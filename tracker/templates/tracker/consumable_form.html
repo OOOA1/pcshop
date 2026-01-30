@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Новый_материал{% endblock %}
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+      <span class="text-indigo-600">></span> Регистрация_материала
+    </h1>
+    <p class="text-slate-500 font-mono text-[10px] mt-1">/root/custom/add_consumable</p>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
+    <div class="bg-slate-900 px-6 py-3 border-b border-slate-800 flex justify-between">
+      <div class="flex gap-1.5">
+        <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+        <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+      </div>
+    </div>
+    
+    <form method="post" class="p-8 space-y-6">
+      {% csrf_token %}
+      
+      <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Наименование</label>
+        {{ form.name }}
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Цена</label>
+          {{ form.purchase_price }}
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Количество</label>
+          {{ form.quantity }}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Описание</label>
+        {{ form.notes }}
+      </div>
+
+      <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
+        <a href="{% url 'consumable_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono">Назад</a>
+        <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+          Добавить_в_базу
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  input, select, textarea {
+    width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+    padding: 0.875rem 1.25rem; font-family: ui-monospace, monospace; font-size: 0.875rem;
+    outline: none; transition: all 0.2s;
+  }
+  input:focus, textarea:focus { background: white; border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+</style>
+
+{% endblock %}

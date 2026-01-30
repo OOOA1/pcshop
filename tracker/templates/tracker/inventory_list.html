@@ -5,7 +5,7 @@
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
   <div>
     <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Склад <span class="text-indigo-600">_</span></h1>
-    <p class="text-slate-500 font-medium">Ревизия базы данных комплектующих</p>
+    <p class="text-slate-500 font-medium font-mono text-[10px] uppercase">Ревизия базы данных комплектующих</p>
   </div>
   <a class="px-6 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all shadow-xl flex items-center gap-2 border border-slate-700" href="{% url 'inventory_add' %}">
     <span class="text-indigo-400 font-mono">></span> Добавить юнит
@@ -14,28 +14,28 @@
 
 <form class="bg-slate-900 rounded-2xl p-6 mb-8 flex flex-wrap gap-4 items-end border border-slate-800 shadow-2xl" method="get">
   <div class="flex-1 min-w-[200px]">
-    <label class="block text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Поиск_по_имени</label>
+    <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2 font-mono">_Поиск_по_имени</label>
     <input name="q" value="{{ request.GET.q }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm" placeholder="ID_запроса...">
   </div>
   <div>
-    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Статус</label>
-    <select name="status" class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 font-mono">_Статус</label>
+    <select name="status" class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-mono">
       <option value="">ВСЕ_СТАТУСЫ</option>
       <option value="in_stock" {% if request.GET.status == 'in_stock' %}selected{% endif %}>В_НАЛИЧИИ</option>
       <option value="installed" {% if request.GET.status == 'installed' %}selected{% endif %}>В_СБОРКЕ</option>
     </select>
   </div>
-  <button class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-900/20" type="submit text-sm">RUN</button>
+  <button class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-900/20 font-mono text-sm" type="submit">RUN</button>
 </form>
 
 <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
   <table class="w-full text-left">
     <thead class="bg-slate-50 border-b border-slate-100">
       <tr>
-        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Деталь / S/N</th>
-        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Категория</th>
-        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Статус</th>
-        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Прайс</th>
+        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Деталь / S/N</th>
+        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Категория</th>
+        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Статус</th>
+        <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono text-right">Прайс</th>
         <th class="px-6 py-4"></th>
       </tr>
     </thead>
@@ -45,23 +45,35 @@
           <td class="px-6 py-5">
             <div class="font-bold text-slate-800">{{ it.name }}</div>
             {% if it.serial_number %}
-              <div class="font-mono text-[10px] text-slate-400 mt-1 uppercase">HEX: {{ it.serial_number }}</div>
+              <div class="font-mono text-[10px] text-slate-400 mt-1 uppercase tracking-tighter text-indigo-400">HEX: {{ it.serial_number }}</div>
             {% endif %}
           </td>
           <td class="px-6 py-5 italic text-slate-500 text-sm">/{{ it.get_category_display }}</td>
           <td class="px-6 py-5">
-            <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase border
+            <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase border font-mono
               {% if it.status == 'in_stock' %}bg-green-50 text-green-600 border-green-100{% else %}bg-slate-50 text-slate-400 border-slate-100{% endif %}">
               {{ it.get_status_display }}
             </span>
           </td>
-          <td class="px-6 py-5 text-right font-mono font-bold text-indigo-600">{{ it.purchase_price }}</td>
+          <td class="px-6 py-5 text-right font-mono font-bold text-slate-900">{{ it.purchase_price }} ₽</td>
           <td class="px-6 py-5 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-            <a class="text-xs font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-tighter" href="{% url 'inventory_edit' it.id %}">Edit_unit</a>
+            <a class="text-[10px] font-bold text-indigo-500 hover:text-indigo-700 uppercase font-mono tracking-tighter" href="{% url 'inventory_edit' it.id %}">[Edit_unit]</a>
           </td>
         </tr>
       {% empty %}
-        <tr><td class="p-10 text-center text-slate-400 italic font-mono" colspan="5">DATABASE_EMPTY: 0 units found.</td></tr>
+        <tr>
+          <td class="p-20 text-center" colspan="5">
+            <div class="flex flex-col items-center justify-center space-y-3">
+              <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
+                <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <p class="text-slate-400 font-medium tracking-tight">Здесь пока ничего нет</p>
+              <p class="text-[10px] text-slate-300 font-mono uppercase tracking-widest italic tracking-tighter">Inventory_is_currently_null</p>
+            </div>
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
