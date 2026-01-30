@@ -2,25 +2,50 @@
 {% block title %}Сборки{% endblock %}
 {% block content %}
 
-<div class="flex items-center justify-between mb-4">
-  <h1 class="text-lg font-semibold">Сборки</h1>
-  <a class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'build_add' %}">+ Создать сборку</a>
+<div class="flex items-center justify-between mb-8">
+  <div>
+    <h1 class="text-3xl font-bold text-slate-900">Сборки</h1>
+    <p class="text-slate-500 mt-1">Всего проектов: {{ builds.count }}</p>
+  </div>
+  <a class="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2" href="{% url 'build_add' %}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    Создать сборку
+  </a>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {% for b in builds %}
-    <a href="{% url 'build_detail' b.id %}" class="bg-white shadow-sm rounded overflow-hidden hover:ring-2 hover:ring-slate-200">
-      {% if b.cover_image %}
-        <img src="{{ b.cover_image.url }}" class="w-full h-48 object-cover" />
-      {% endif %}
-      <div class="p-4">
-        <div class="font-semibold">{{ b.title }}</div>
-        <div class="text-sm text-slate-600">{{ b.get_status_display }}</div>
-        <div class="text-sm mt-2">Себестоимость: <span class="font-medium">{{ b.cost }}</span></div>
+    <a href="{% url 'build_detail' b.id %}" class="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+      <div class="relative h-56 bg-slate-200 overflow-hidden">
+        {% if b.cover_image %}
+          <img src="{{ b.cover_image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        {% else %}
+          <div class="w-full h-full flex items-center justify-center text-slate-400 italic">Нет фото</div>
+        {% endif %}
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm border
+            {% if b.status == 'published' %}bg-green-500 text-white border-green-600{% elif b.status == 'draft' %}bg-amber-400 text-white border-amber-500{% elif b.status == 'sold' %}bg-slate-700 text-white border-slate-800{% else %}bg-slate-100 text-slate-500{% endif %}">
+            {{ b.get_status_display }}
+          </span>
+        </div>
+      </div>
+      <div class="p-6">
+        <h3 class="text-xl font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{{ b.title }}</h3>
+        <div class="mt-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">Себестоимость</p>
+            <p class="text-lg font-bold text-slate-900 leading-tight">{{ b.cost }} ₽</p>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+            <svg class="w-5 h-5 text-slate-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </div>
+        </div>
       </div>
     </a>
   {% empty %}
-    <div class="text-slate-600">Пока нет сборок.</div>
+    <div class="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200">
+      <p class="text-slate-400">Пока нет созданных сборок</p>
+    </div>
   {% endfor %}
 </div>
 

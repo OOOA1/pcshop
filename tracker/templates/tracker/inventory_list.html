@@ -1,55 +1,67 @@
 {% extends "base.html" %}
-{% block title %}Склад{% endblock %}
+{% block title %}Склад | Контроль комплектующих{% endblock %}
 {% block content %}
 
-<div class="flex items-center justify-between mb-4">
-  <h1 class="text-lg font-semibold">Склад</h1>
-  <a class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'inventory_add' %}">+ Добавить товар</a>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+  <div>
+    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Склад <span class="text-indigo-600">_</span></h1>
+    <p class="text-slate-500 font-medium">Ревизия базы данных комплектующих</p>
+  </div>
+  <a class="px-6 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all shadow-xl flex items-center gap-2 border border-slate-700" href="{% url 'inventory_add' %}">
+    <span class="text-indigo-400 font-mono">></span> Добавить юнит
+  </a>
 </div>
 
-<form class="bg-white shadow-sm rounded p-3 mb-4 flex flex-wrap gap-3 items-end" method="get">
-  <div>
-    <div class="text-xs text-slate-500 mb-1">Поиск</div>
-    <input name="q" value="{{ request.GET.q }}" class="border rounded px-2 py-1 w-64" placeholder="например: 4060, 1TB, i5">
+<form class="bg-slate-900 rounded-2xl p-6 mb-8 flex flex-wrap gap-4 items-end border border-slate-800 shadow-2xl" method="get">
+  <div class="flex-1 min-w-[200px]">
+    <label class="block text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Поиск_по_имени</label>
+    <input name="q" value="{{ request.GET.q }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm" placeholder="ID_запроса...">
   </div>
   <div>
-    <div class="text-xs text-slate-500 mb-1">Статус</div>
-    <input name="status" value="{{ request.GET.status }}" class="border rounded px-2 py-1" placeholder="in_stock">
+    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Статус</label>
+    <select name="status" class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+      <option value="">ВСЕ_СТАТУСЫ</option>
+      <option value="in_stock" {% if request.GET.status == 'in_stock' %}selected{% endif %}>В_НАЛИЧИИ</option>
+      <option value="installed" {% if request.GET.status == 'installed' %}selected{% endif %}>В_СБОРКЕ</option>
+    </select>
   </div>
-  <div>
-    <div class="text-xs text-slate-500 mb-1">Категория</div>
-    <input name="category" value="{{ request.GET.category }}" class="border rounded px-2 py-1" placeholder="gpu/ssd/etc">
-  </div>
-  <button class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" type="submit">Фильтр</button>
+  <button class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-900/20" type="submit text-sm">RUN</button>
 </form>
 
-<div class="bg-white shadow-sm rounded overflow-hidden">
-  <table class="w-full text-sm">
-    <thead class="bg-slate-100">
+<div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+  <table class="w-full text-left">
+    <thead class="bg-slate-50 border-b border-slate-100">
       <tr>
-        <th class="text-left p-3">Товар</th>
-        <th class="text-left p-3">Категория</th>
-        <th class="text-left p-3">Статус</th>
-        <th class="text-right p-3">Закупка</th>
-        <th class="p-3"></th>
+        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Деталь / S/N</th>
+        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Категория</th>
+        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Статус</th>
+        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Прайс</th>
+        <th class="px-6 py-4"></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="divide-y divide-slate-50">
       {% for it in items %}
-        <tr class="border-t">
-          <td class="p-3">
-            <div class="font-medium">{{ it.name }}</div>
-            {% if it.serial_number %}<div class="text-xs text-slate-500">S/N: {{ it.serial_number }}</div>{% endif %}
+        <tr class="hover:bg-slate-50 transition-colors group">
+          <td class="px-6 py-5">
+            <div class="font-bold text-slate-800">{{ it.name }}</div>
+            {% if it.serial_number %}
+              <div class="font-mono text-[10px] text-slate-400 mt-1 uppercase">HEX: {{ it.serial_number }}</div>
+            {% endif %}
           </td>
-          <td class="p-3">{{ it.get_category_display }}</td>
-          <td class="p-3">{{ it.get_status_display }}</td>
-          <td class="p-3 text-right">{{ it.purchase_price }}</td>
-          <td class="p-3 text-right">
-            <a class="px-3 py-1 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'inventory_edit' it.id %}">Редакт.</a>
+          <td class="px-6 py-5 italic text-slate-500 text-sm">/{{ it.get_category_display }}</td>
+          <td class="px-6 py-5">
+            <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase border
+              {% if it.status == 'in_stock' %}bg-green-50 text-green-600 border-green-100{% else %}bg-slate-50 text-slate-400 border-slate-100{% endif %}">
+              {{ it.get_status_display }}
+            </span>
+          </td>
+          <td class="px-6 py-5 text-right font-mono font-bold text-indigo-600">{{ it.purchase_price }}</td>
+          <td class="px-6 py-5 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+            <a class="text-xs font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-tighter" href="{% url 'inventory_edit' it.id %}">Edit_unit</a>
           </td>
         </tr>
       {% empty %}
-        <tr><td class="p-3" colspan="5">Пока пусто.</td></tr>
+        <tr><td class="p-10 text-center text-slate-400 italic font-mono" colspan="5">DATABASE_EMPTY: 0 units found.</td></tr>
       {% endfor %}
     </tbody>
   </table>

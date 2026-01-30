@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, UpdateView
+from django.db.models import Sum
 
 from .models import InventoryItem, Build, BuildItem, Sale, ItemStatus, BuildStatus
 from .forms import InventoryItemForm, BuildForm, AddItemToBuildForm, SaleForm
@@ -119,7 +120,6 @@ def build_remove_item(request, pk: int, item_id: int):
     messages.success(request, "Товар убран из сборки и возвращён на склад.")
     return redirect("build_detail", pk=build.pk)
 
-
 class SaleListView(ListView):
     model = Sale
     template_name = "tracker/sale_list.html"
@@ -127,6 +127,13 @@ class SaleListView(ListView):
 
     def get_queryset(self):
         return Sale.objects.select_related("build").order_by("-sold_at")
+
+    # Добавь этот метод для передачи суммы в шаблон
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Считаем сумму всех проданных сборок
+        context['total_revenue'] = self.get_queryset().aggregate(Sum('sold_price'))['sold_price__sum']
+        return context
 
 
 class SaleCreateView(CreateView):

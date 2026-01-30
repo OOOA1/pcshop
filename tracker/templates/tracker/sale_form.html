@@ -1,19 +1,62 @@
 {% extends "base.html" %}
-{% block title %}Записать продажу{% endblock %}
+{% block title %}Фиксация_сделки{% endblock %}
 {% block content %}
 
-<div class="bg-white shadow-sm rounded p-4 max-w-2xl">
-  <h1 class="text-lg font-semibold mb-4">Записать продажу</h1>
+<div class="max-w-2xl mx-auto">
+  <div class="text-center mb-10">
+    <div class="inline-block p-3 bg-green-50 rounded-2xl mb-4 border border-green-100">
+      <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    </div>
+    <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">Подтверждение_продажи</h1>
+    <p class="text-slate-500 font-mono text-[10px] uppercase mt-1">Status: Проверка_данных...</p>
+  </div>
 
-  <form method="post" class="space-y-3">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" type="submit">Сохранить</button>
-  </form>
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-2xl overflow-hidden border-t-4 border-t-green-500">
+    <form method="post" class="p-8 space-y-6">
+      {% csrf_token %}
+      
+      <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 font-mono">_Целевой_объект (Сборка)</label>
+        {{ form.build }}
+      </div>
 
-  <div class="text-xs text-slate-500 mt-3">
-    После сохранения сборка и все товары внутри автоматически станут “Продан”.
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Цена_реализации</label>
+          {{ form.sold_price }}
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Комиссии_сервиса</label>
+          {{ form.fees }}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Дата_транзакции</label>
+        {{ form.sold_at }}
+      </div>
+
+      <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Комментарий</label>
+        {{ form.notes }}
+      </div>
+
+      <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase hover:bg-green-600 transition-all shadow-xl flex items-center justify-center gap-3">
+        Завершить_сделку [Deploy]
+      </button>
+    </form>
   </div>
 </div>
+
+<style>
+  input, select, textarea {
+    width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+    padding: 0.875rem 1.25rem; font-family: ui-monospace, monospace; font-size: 0.875rem;
+    outline: none; transition: all 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    background: white; border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  }
+</style>
 
 {% endblock %}

@@ -1,39 +1,80 @@
 {% extends "base.html" %}
-{% block title %}Продажи{% endblock %}
+{% block title %}Продажи | Financial_Logs{% endblock %}
 {% block content %}
 
-<div class="flex items-center justify-between mb-4">
-  <h1 class="text-lg font-semibold">Продажи</h1>
-  <a class="px-3 py-2 rounded bg-slate-900 text-white hover:bg-slate-800" href="{% url 'sale_add' %}">+ Записать продажу</a>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+  <div>
+    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight text-uppercase">Продажи <span class="text-indigo-600">_</span></h1>
+    <p class="text-slate-500 font-medium font-mono text-xs">/root/logs/financial_transactions.log</p>
+  </div>
+  <a class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center gap-2 border border-indigo-500" href="{% url 'sale_add' %}">
+    <span class="font-mono text-indigo-200">+</span> Записать_сделку
+  </a>
 </div>
 
-<div class="bg-white shadow-sm rounded overflow-hidden">
-  <table class="w-full text-sm">
-    <thead class="bg-slate-100">
+<div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+  <table class="w-full text-left border-collapse">
+    <thead class="bg-slate-900 text-white">
       <tr>
-        <th class="text-left p-3">Дата</th>
-        <th class="text-left p-3">Сборка</th>
-        <th class="text-right p-3">Себестоимость</th>
-        <th class="text-right p-3">Продажа</th>
-        <th class="text-right p-3">Расходы</th>
-        <th class="text-right p-3">Прибыль</th>
+        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest opacity-60">Timestamp</th>
+        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest opacity-60">Build_Entity</th>
+        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest opacity-60 text-right">Cost</th>
+        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest opacity-60 text-right">Revenue</th>
+        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest opacity-60 text-right">Fees</th>
+        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest opacity-60 text-right">Net_Profit</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="divide-y divide-slate-100">
       {% for s in sales %}
-        <tr class="border-t">
-          <td class="p-3">{{ s.sold_at }}</td>
-          <td class="p-3">{{ s.build.title }}</td>
-          <td class="p-3 text-right">{{ s.build.cost }}</td>
-          <td class="p-3 text-right">{{ s.sold_price }}</td>
-          <td class="p-3 text-right">{{ s.fees }}</td>
-          <td class="p-3 text-right font-medium">{{ s.profit }}</td>
+        <tr class="hover:bg-indigo-50/30 transition-colors group">
+          <td class="px-6 py-5 font-mono text-xs text-slate-400">
+            {{ s.sold_at|date:"Y-m-d" }}<br>
+            <span class="text-[10px] uppercase opacity-50">{{ s.sold_at|date:"H:i" }}</span>
+          </td>
+          <td class="px-6 py-5">
+            <div class="font-bold text-slate-800">{{ s.build.title }}</div>
+            <div class="text-[10px] text-slate-400 font-mono italic">Object_ID: {{ s.id }}</div>
+          </td>
+          <td class="px-6 py-5 text-right font-mono text-sm text-slate-500">
+            {{ s.build.cost }}
+          </td>
+          <td class="px-6 py-5 text-right font-mono font-bold text-slate-900 italic">
+            {{ s.sold_price }}
+          </td>
+          <td class="px-6 py-5 text-right font-mono text-xs text-red-400">
+            -{{ s.fees }}
+          </td>
+          <td class="px-6 py-5 text-right">
+            <span class="inline-block px-3 py-1 rounded-lg bg-green-500 text-white font-mono font-black text-sm shadow-sm shadow-green-200">
+              +{{ s.profit }}
+            </span>
+          </td>
         </tr>
       {% empty %}
-        <tr><td class="p-3" colspan="6">Пока нет продаж.</td></tr>
+        <tr>
+          <td class="p-20 text-center text-slate-400 italic font-mono uppercase text-xs" colspan="6">
+            NO_TRANSACTIONS_LOGGED: 0 entries found.
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
+</div>
+
+<div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl">
+    <div class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2 font-mono">Total_Revenue</div>
+    <div class="text-2xl font-black text-white font-mono tracking-tighter italic">
+      {{ total_revenue|default:"0.00" }} ₽
+    </div>
+  </div>
+  
+  <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Transactions_Count</div>
+    <div class="text-2xl font-black text-slate-900 font-mono tracking-tighter italic">
+      {{ sales.count }} units
+    </div>
+  </div>
 </div>
 
 {% endblock %}
