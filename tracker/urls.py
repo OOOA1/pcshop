@@ -2,7 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.InventoryListView.as_view(), name="inventory_list"),
+    # ГЛАВНАЯ ТЕПЕРЬ ТУТ
+    path("", views.DashboardView.as_view(), name="dashboard"),
+    
+    path("inventory/", views.InventoryListView.as_view(), name="inventory_list"),
     path("inventory/add/", views.InventoryCreateView.as_view(), name="inventory_add"),
     path("inventory/<int:pk>/edit/", views.InventoryUpdateView.as_view(), name="inventory_edit"),
     
@@ -15,7 +18,12 @@ urlpatterns = [
     path("sales/add/", views.SaleCreateView.as_view(), name="sale_add"),
     
     path("archive/", views.ArchiveView.as_view(), name="archive_list"),
-
+    
     path("consumables/", views.ConsumableListView.as_view(), name="consumable_list"),
     path("consumables/add/", views.ConsumableCreateView.as_view(), name="consumable_add"),
+
+    path("purchases/", views.PurchasePlanListView.as_view(), name="purchase_list"),
+    path("purchases/add/", views.PurchasePlanCreateView.as_view(), name="purchase_add"),
+    path("purchases/<int:pk>/toggle/", views.purchase_toggle, name="purchase_toggle"),
+    path("purchases/<int:pk>/delete/", views.purchase_delete, name="purchase_delete"),
 ]

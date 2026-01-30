@@ -5,7 +5,7 @@
 <div class="max-w-3xl mx-auto">
   <div class="mb-8">
     <h1 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">
-      <span class="text-indigo-600">></span> Регистрация_детали
+      <span class="text-indigo-600">></span> Регистрация детали
     </h1>
     <p class="text-slate-500 font-mono text-[10px] mt-1">/dev/inventory/new_item_config</p>
   </div>
@@ -25,38 +25,38 @@
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="md:col-span-2">
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Название_модели</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Название модели</label>
           {{ form.name }}
         </div>
         
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Категория_железа</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Категория железа</label>
           {{ form.category }}
         </div>
         
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Текущий_статус</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Текущий статус</label>
           {{ form.status }}
         </div>
 
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Цена_закупки (₽)</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Цена_закупки (₽)</label>
           {{ form.purchase_price }}
         </div>
 
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Серийный_номер</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Серийный номер</label>
           {{ form.serial_number }}
         </div>
       </div>
 
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Технические_заметки</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Технические заметки</label>
         {{ form.notes }}
       </div>
 
       <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
-        <a href="{% url 'inventory_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono">Отмена_операции</a>
+        <a href="{% url 'inventory_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono">Отмена операции</a>
         <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
           Выполнить_запись [Save]
         </button>

@@ -5,9 +5,9 @@
 <div class="max-w-2xl mx-auto">
   <div class="mb-8">
     <h1 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">
-      <span class="text-indigo-600">></span> Регистрация_материала
+      <span class="text-indigo-600">></span> Регистрация материала
     </h1>
-    <p class="text-slate-500 font-mono text-[10px] mt-1">/root/custom/add_consumable</p>
+    <!-- <p class="text-slate-500 font-mono text-[10px] mt-1">/root/custom/add_consumable</p> -->
   </div>
 
   <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
@@ -22,30 +22,30 @@
       {% csrf_token %}
       
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Наименование</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Наименование</label>
         {{ form.name }}
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Цена</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Цена</label>
           {{ form.purchase_price }}
         </div>
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Количество</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Количество</label>
           {{ form.quantity }}
         </div>
       </div>
 
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Описание</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Описание</label>
         {{ form.notes }}
       </div>
 
       <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
         <a href="{% url 'consumable_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono">Назад</a>
         <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-          Добавить_в_базу
+          Добавить в базу
         </button>
       </div>
     </form>

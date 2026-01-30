@@ -14,18 +14,18 @@
 
 <form class="bg-slate-900 rounded-2xl p-6 mb-8 flex flex-wrap gap-4 items-end border border-slate-800 shadow-2xl" method="get">
   <div class="flex-1 min-w-[200px]">
-    <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2 font-mono">_Поиск_по_имени</label>
+    <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2 font-mono">Поиск по имени</label>
     <input name="q" value="{{ request.GET.q }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm" placeholder="ID_запроса...">
   </div>
   <div>
-    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 font-mono">_Статус</label>
+    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 font-mono">Статус</label>
     <select name="status" class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-mono">
-      <option value="">ВСЕ_СТАТУСЫ</option>
-      <option value="in_stock" {% if request.GET.status == 'in_stock' %}selected{% endif %}>В_НАЛИЧИИ</option>
-      <option value="installed" {% if request.GET.status == 'installed' %}selected{% endif %}>В_СБОРКЕ</option>
+      <option value="">ВСЕ СТАТУСЫ</option>
+      <option value="in_stock" {% if request.GET.status == 'in_stock' %}selected{% endif %}>В НАЛИЧИИ</option>
+      <option value="installed" {% if request.GET.status == 'installed' %}selected{% endif %}>В СБОРКЕ</option>
     </select>
   </div>
-  <button class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-900/20 font-mono text-sm" type="submit">RUN</button>
+  <button class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-900/20 font-mono text-sm" type="submit">Поиск</button>
 </form>
 
 <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
@@ -70,7 +70,7 @@
                 </svg>
               </div>
               <p class="text-slate-400 font-medium tracking-tight">Здесь пока ничего нет</p>
-              <p class="text-[10px] text-slate-300 font-mono uppercase tracking-widest italic tracking-tighter">Inventory_is_currently_null</p>
+              <p class="text-[10px] text-slate-300 font-mono uppercase tracking-widest italic tracking-tighter">Пусто</p>
             </div>
           </td>
         </tr>

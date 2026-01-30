@@ -5,13 +5,13 @@
 <div class="space-y-12">
   <header>
     <h1 class="text-3xl font-black text-slate-900 uppercase tracking-tighter italic">
-      <span class="text-indigo-600">></span> Archive_Database
+      <span class="text-indigo-600">></span>Архив
     </h1>
     <p class="text-slate-400 font-mono text-[10px] mt-1 uppercase italic font-bold">Реестр завершенных циклов сборки и реализации</p>
   </header>
 
   <section>
-    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 font-mono italic">_Sold_Builds [Сборки]</h2>
+    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 font-mono italic">Проданные сборки(архивные)</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for b in sold_builds %}
         <div onclick="openModal('modal-{{ b.id }}')" class="cursor-pointer group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm grayscale-[0.5] hover:grayscale-0 hover:border-indigo-300 transition-all">
@@ -64,14 +64,14 @@
         </div>
       {% empty %}
         <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-100 opacity-60">
-           <p class="text-slate-400 font-medium font-mono text-xs uppercase italic"># No_sold_builds_in_history</p>
+           <p class="text-slate-400 font-medium font-mono text-xs uppercase italic">Ничего нет</p>
         </div>
       {% endfor %}
     </div>
   </section>
 
   <section>
-    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 font-mono italic">_Sold_Items [Отдельные_детали]</h2>
+    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 font-mono italic">Проданные детали(архивные)</h2>
     <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
       <table class="w-full text-left font-mono text-xs">
         <tbody class="divide-y divide-slate-50">
@@ -84,7 +84,7 @@
           {% empty %}
             <tr>
               <td class="p-12 text-center text-slate-300 font-mono text-[10px] uppercase italic tracking-widest" colspan="3">
-                No_separate_items_sold_yet
+                Ничего нет
               </td>
             </tr>
           {% endfor %}

@@ -7,8 +7,8 @@
     <div class="inline-block p-3 bg-green-50 rounded-2xl mb-4 border border-green-100">
       <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
     </div>
-    <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">Подтверждение_продажи</h1>
-    <p class="text-slate-500 font-mono text-[10px] uppercase mt-1">Status: Проверка_данных...</p>
+    <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">Подтверждение продажи</h1>
+    <p class="text-slate-500 font-mono text-[10px] uppercase mt-1">Status: Проверка данных...</p>
   </div>
 
   <div class="bg-white rounded-3xl border border-slate-100 shadow-2xl overflow-hidden border-t-4 border-t-green-500">
@@ -16,33 +16,33 @@
       {% csrf_token %}
       
       <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 font-mono">_Целевой_объект (Сборка)</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 font-mono">Целевой объект</label>
         {{ form.build }}
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Цена_реализации</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Цена реализации</label>
           {{ form.sold_price }}
         </div>
         <div>
-          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Комиссии_сервиса</label>
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Комиссии сервиса</label>
           {{ form.fees }}
         </div>
       </div>
 
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Дата_транзакции</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Дата транзакции</label>
         {{ form.sold_at }}
       </div>
 
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">_Комментарий</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Комментарий</label>
         {{ form.notes }}
       </div>
 
       <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase hover:bg-green-600 transition-all shadow-xl flex items-center justify-center gap-3">
-        Завершить_сделку [Deploy]
+        Завершить сделку
       </button>
     </form>
   </div>

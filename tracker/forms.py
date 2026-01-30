@@ -1,5 +1,5 @@
 from django import forms
-from .models import InventoryItem, Build, BuildItem, Sale, Consumable
+from .models import InventoryItem, Build, BuildItem, Sale, Consumable, BuildConsumable, PurchasePlan
 
 class InventoryItemForm(forms.ModelForm):
     class Meta:
@@ -48,7 +48,6 @@ class SaleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Показываем только те сборки, которые еще не проданы
         self.fields['build'].queryset = Build.objects.exclude(status="sold")
 
 class ConsumableForm(forms.ModelForm):
@@ -68,3 +67,14 @@ class AddConsumableToBuildForm(forms.Form):
         label="Материал"
     )
     qty_used = forms.IntegerField(min_value=1, initial=1, label="Кол-во")
+
+class PurchasePlanForm(forms.ModelForm):
+    class Meta:
+        model = PurchasePlan
+        fields = ["item_name", "expected_price", "is_bought", "notes"]
+        labels = {
+            "item_name": "Что нужно купить",
+            "expected_price": "Ожидаемая цена",
+            "is_bought": "Куплено",
+            "notes": "Заметки",
+        }

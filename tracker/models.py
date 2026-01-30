@@ -46,9 +46,7 @@ class Build(models.Model):
 
     @property
     def cost(self):
-        # Стоимость железа
         hardware_cost = sum(link.item.purchase_price * link.qty for link in self.build_items.all())
-        # Стоимость кастома (расходников)
         custom_cost = sum(link.consumable.purchase_price * link.qty_used for link in self.custom_materials.all())
         return hardware_cost + custom_cost
 
@@ -83,18 +81,28 @@ class Sale(models.Model):
 
 class Consumable(models.Model):
     name = models.CharField(max_length=200)
-    purchase_price = models.DecimalField(max_digits=10, decimal_places=2) # Цена за единицу (банку/рулон)
-    quantity = models.PositiveIntegerField(default=1) # Общий запас
+    purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
     purchased_at = models.DateField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name} (остаток: {self.quantity})"
+        return self.name
 
 class BuildConsumable(models.Model):
     build = models.ForeignKey(Build, on_delete=models.CASCADE, related_name="custom_materials")
     consumable = models.ForeignKey(Consumable, on_delete=models.CASCADE)
-    qty_used = models.PositiveIntegerField(default=1) # Сколько потратили на этот кастом
+    qty_used = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return f"{self.consumable.name} для {self.build.title}"
+
+class PurchasePlan(models.Model):
+    item_name = models.CharField(max_length=200)
+    expected_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    is_bought = models.BooleanField(default=False)
+    notes = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.item_name

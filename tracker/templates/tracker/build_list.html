@@ -5,7 +5,7 @@
 <div class="flex items-center justify-between mb-8">
   <div>
     <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Сборки <span class="text-indigo-600">/</span></h1>
-    <p class="text-slate-500 font-medium font-mono text-[10px] uppercase mt-1">Active_build_processes: {{ builds.count }}</p>
+    <p class="text-slate-500 font-medium font-mono text-[10px] uppercase mt-1">Активных сборок: {{ builds.count }}</p>
   </div>
   <a class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2" href="{% url 'build_add' %}">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -49,7 +49,7 @@
            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
         </div>
         <p class="text-slate-400 font-medium tracking-tight">Активных сборок не найдено</p>
-        <p class="text-[10px] text-slate-300 font-mono uppercase tracking-widest italic tracking-tighter">No_active_projects_found</p>
+        <p class="text-[10px] text-slate-300 font-mono uppercase tracking-widest italic tracking-tighter">Пусто</p>
       </div>
     </div>
   {% endfor %}
