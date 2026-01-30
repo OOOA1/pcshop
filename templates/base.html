@@ -5,49 +5,110 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}PC Upgrade{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 border border-indigo-500">
-          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+<body class="bg-slate-50 text-slate-900 antialiased flex flex-col min-h-screen">
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+    
+    <header class="relative mb-8">
+      <div class="flex items-center justify-between">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 md:w-12 md:h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 border border-indigo-500 shrink-0">
+            <svg class="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xl md:text-2xl font-black tracking-tighter text-slate-900 uppercase italic">PC<span class="text-indigo-600">Upgrade</span></span>
+            <!-- <p class="text-[10px] font-mono text-slate-400 font-bold leading-none uppercase tracking-widest mt-0.5 md:mt-1">v2.2_mobile</p> -->
+          </div>
         </div>
-        <div>
-          <span class="text-2xl font-black tracking-tighter text-slate-900 uppercase italic">PC<span class="text-indigo-600">Upgrade</span></span>
-          <!-- <p class="text-[10px] font-mono text-slate-400 font-bold leading-none uppercase tracking-widest mt-1">v2.1_stable</p> -->
-        </div>
+
+        <button id="burger-btn" class="md:hidden p-2 text-slate-600 hover:text-indigo-600 transition-colors focus:outline-none">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <nav class="hidden md:flex items-center p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm font-mono text-[11px] uppercase font-bold italic">
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'dashboard' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'dashboard' %}">_Аналитика</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'inventory_list' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'inventory_list' %}">_Склад</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'build' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'build_list' %}">_Сборки</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'consumable' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'consumable_list' %}">_Расходники</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'purchase' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'purchase_list' %}">_Купить</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'sale' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'sale_list' %}">_Продажи</a>
+           <div class="w-px h-4 bg-slate-200 mx-2"></div>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'archive' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'archive_list' %}">_Архив</a>
+        </nav>
       </div>
 
-      <nav class="flex items-center p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-x-auto max-w-full font-mono text-[11px] uppercase font-bold italic">
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'dashboard' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'dashboard' %}">Аналитика</a>
-        
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'inventory_list' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'inventory_list' %}">Склад</a>
-        
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'build' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'build_list' %}">Сборки</a>
-        
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'consumable' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'consumable_list' %}">Кастом</a>
-        
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'purchase' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'purchase_list' %}">Купить</a>
-
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'sale' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'sale_list' %}">Продажи</a>
-        
-        <div class="w-px h-4 bg-slate-200 mx-2"></div>
-        
-        <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'archive' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'archive_list' %}">Архив</a>
-      </nav>
+      <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white border border-slate-100 rounded-3xl shadow-xl z-50 mt-4 overflow-hidden">
+        <nav class="flex flex-col p-2 font-mono text-xs uppercase font-bold italic">
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'dashboard' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Аналитика
+           </a>
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if request.resolver_match.url_name == 'inventory_list' %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'inventory_list' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if request.resolver_match.url_name == 'inventory_list' %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Склад
+           </a>
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if 'build' in request.resolver_match.url_name %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'build_list' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if 'build' in request.resolver_match.url_name %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Сборки
+           </a>
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if 'consumable' in request.resolver_match.url_name %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'consumable_list' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if 'consumable' in request.resolver_match.url_name %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Расходники
+           </a>
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if 'purchase' in request.resolver_match.url_name %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'purchase_list' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if 'purchase' in request.resolver_match.url_name %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Купить
+           </a>
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if 'sale' in request.resolver_match.url_name %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'sale_list' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if 'sale' in request.resolver_match.url_name %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Продажи
+           </a>
+           <div class="h-px bg-slate-100 my-1 mx-4"></div>
+           <a class="px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3 {% if 'archive' in request.resolver_match.url_name %}bg-indigo-50 text-indigo-600{% endif %}" href="{% url 'archive_list' %}">
+              <span class="w-1.5 h-1.5 rounded-full {% if 'archive' in request.resolver_match.url_name %}bg-indigo-600{% else %}bg-slate-300{% endif %}"></span> Архив
+           </a>
+        </nav>
+      </div>
     </header>
+
+    {% include "_messages.html" %}
 
     <main class="min-h-[60vh]">
       {% block content %}{% endblock %}
     </main>
+
+    <footer class="mt-12 md:mt-20 pt-8 border-t border-slate-200">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+        <p class="text-[10px] font-mono text-slate-400 uppercase tracking-widest italic font-bold">PC_Upgrade // System // 2026</p>
+        <div class="flex gap-4 justify-center md:justify-start">
+          <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse mt-1"></div>
+          <span class="text-[10px] font-mono text-slate-300 uppercase font-bold">Server_Online</span>
+        </div>
+      </div>
+    </footer>
   </div>
+
+  <script>
+    // Логика бургер-меню
+    const burgerBtn = document.getElementById('burger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    burgerBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Закрыть меню при клике вне его
+    document.addEventListener('click', (e) => {
+        if (!burgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+  </script>
 </body>
 </html>

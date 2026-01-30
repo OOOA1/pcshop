@@ -23,6 +23,13 @@ class BuildStatus(models.TextChoices):
     PUBLISHED = "published", "Выставлен на продажу"
     SOLD = "sold", "Продан"
 
+# --- НОВАЯ КЛАССИФИКАЦИЯ ---
+class BuildCategory(models.TextChoices):
+    GAMING = "gaming", "Игровая"
+    OFFICE = "office", "Офисная"
+    WORKSTATION = "workstation", "Рабочая станция"
+# ---------------------------
+
 class InventoryItem(models.Model):
     category = models.CharField(max_length=50, choices=Category.choices, default=Category.OTHER)
     name = models.CharField(max_length=200)
@@ -38,12 +45,25 @@ class InventoryItem(models.Model):
 
 class Build(models.Model):
     title = models.CharField(max_length=200)
+    
+    # --- НОВОЕ ПОЛЕ: КАТЕГОРИЯ ---
+    category = models.CharField(
+        max_length=20, 
+        choices=BuildCategory.choices, 
+        default=BuildCategory.GAMING, 
+        verbose_name="Тип сборки"
+    )
+    # -----------------------------
+    
     description = models.TextField(blank=True, null=True)
     listing_url = models.URLField(blank=True, null=True)
     cover_image = models.ImageField(upload_to="builds/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=BuildStatus.choices, default=BuildStatus.DRAFT)
-    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Поле учета времени
     work_hours = models.DecimalField(max_digits=5, decimal_places=1, default=0, verbose_name="Затрачено часов")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
 
     @property
     def cost(self):

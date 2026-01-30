@@ -25,7 +25,6 @@ class InventoryCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        # Подтягиваем данные из ссылки
         name = self.request.GET.get('name')
         price = self.request.GET.get('price')
         if name:
@@ -35,15 +34,10 @@ class InventoryCreateView(CreateView):
         return initial
 
     def form_valid(self, form):
-        # Это срабатывает, когда ты нажал "Сохранить" и всё заполнено верно
         response = super().form_valid(form)
-        
-        # Проверяем, был ли передан ID покупки
         purchase_id = self.request.GET.get('purchase_id')
         if purchase_id:
-            # Если да — удаляем эту заметку из списка "Купить"
             PurchasePlan.objects.filter(id=purchase_id).delete()
-            
         return response
 
 class InventoryUpdateView(UpdateView):
@@ -56,8 +50,10 @@ class BuildListView(ListView):
     model = Build
     template_name = "tracker/build_list.html"
     context_object_name = "builds"
+    
     def get_queryset(self):
-        return Build.objects.exclude(status=BuildStatus.SOLD).order_by("-created_at")
+        # Показываем ВСЕ сборки (убрали .exclude), новые сверху
+        return Build.objects.all().order_by("-created_at")
 
 class BuildCreateView(CreateView):
     model = Build
@@ -76,26 +72,46 @@ class BuildDetailView(DetailView):
         context["add_form"] = AddItemToBuildForm()
         context["custom_form"] = AddConsumableToBuildForm()
         return context
+
     def post(self, request, *args, **kwargs):
         build = self.get_object()
         action = request.POST.get("action")
+        
         if action == "add_item":
             form = AddItemToBuildForm(request.POST)
             if form.is_valid():
                 item = form.cleaned_data["item"]
-                qty = form.cleaned_data["qty"]; BuildItem.objects.create(build=build, item=item, qty=qty)
-                item.status = ItemStatus.INSTALLED; item.save()
+                qty = form.cleaned_data["qty"]
+                BuildItem.objects.create(build=build, item=item, qty=qty)
+                item.status = ItemStatus.INSTALLED
+                item.save()
+        
         elif action == "add_custom":
             form = AddConsumableToBuildForm(request.POST)
             if form.is_valid():
                 consumable = form.cleaned_data["consumable"]
-                qty = form.cleaned_data["qty_used"]; BuildConsumable.objects.create(build=build, consumable=consumable, qty_used=qty)
-                consumable.quantity -= qty; consumable.save()
+                qty = form.cleaned_data["qty_used"]
+                BuildConsumable.objects.create(build=build, consumable=consumable, qty_used=qty)
+                # Уменьшаем остаток
+                consumable.quantity -= qty
+                consumable.save()
+
+        # --- НОВАЯ ЛОГИКА: Обновление часов ---
+        elif action == "update_hours":
+            hours = request.POST.get("work_hours")
+            if hours:
+                build.work_hours = hours
+                build.save()
+        # --------------------------------------
+                
         return redirect("build_detail", pk=build.pk)
 
 def build_remove_item(request, build_id, item_id):
     build_item = get_object_or_404(BuildItem, build_id=build_id, item_id=item_id)
-    item = build_item.item; item.status = ItemStatus.IN_STOCK; item.save(); build_item.delete()
+    item = build_item.item
+    item.status = ItemStatus.IN_STOCK
+    item.save()
+    build_item.delete()
     return redirect("build_detail", pk=build_id)
 
 class SaleListView(ListView):
@@ -138,7 +154,6 @@ class ConsumableCreateView(CreateView):
     template_name = "tracker/consumable_form.html"
     success_url = reverse_lazy('consumable_list')
 
-# ПЛАН ЗАКУПОК
 class PurchasePlanListView(ListView):
     model = PurchasePlan
     template_name = "tracker/purchase_list.html"
@@ -172,14 +187,32 @@ class DashboardView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Статистика
-        context['total_profit'] = sum(s.profit for s in Sale.objects.all())
-        context['total_revenue'] = Sale.objects.aggregate(Sum('sold_price'))['sold_price__sum'] or 0
+        
+        # 1. Основные KPI
+        all_sales = Sale.objects.select_related('build').all()
+        context['total_profit'] = sum(s.profit for s in all_sales)
+        context['total_revenue'] = all_sales.aggregate(Sum('sold_price'))['sold_price__sum'] or 0
         context['inventory_value'] = InventoryItem.objects.filter(status='in_stock').aggregate(Sum('purchase_price'))['purchase_price__sum'] or 0
         
-        # Данные для графика (последние 7 продаж)
+        # 2. График динамики (общий профит по последним продажам)
         sales_for_chart = Sale.objects.order_by('-sold_at')[:7]
         context['chart_labels'] = [s.build.title for s in sales_for_chart][::-1]
         context['chart_data'] = [float(s.profit) for s in sales_for_chart][::-1]
+        
+        # 3. АНАЛИТИКА ПО КАТЕГОРИЯМ (Новое)
+        # Собираем словарь: {'Игровая': {'count': 5, 'profit': 50000}, ...}
+        cat_stats = {}
+        for sale in all_sales:
+            cat_name = sale.build.get_category_display() # Получаем "Игровая", а не "gaming"
+            if cat_name not in cat_stats:
+                cat_stats[cat_name] = {'count': 0, 'profit': 0}
+            
+            cat_stats[cat_name]['count'] += 1
+            cat_stats[cat_name]['profit'] += float(sale.profit)
+            
+        # Разбираем словарь на списки для Chart.js
+        context['cat_labels'] = list(cat_stats.keys())
+        context['cat_counts'] = [data['count'] for data in cat_stats.values()]
+        context['cat_profits'] = [data['profit'] for data in cat_stats.values()]
         
         return context

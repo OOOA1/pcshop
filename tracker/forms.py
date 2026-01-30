@@ -1,6 +1,6 @@
 from django import forms
-from .models import InventoryItem, Build, BuildItem, Sale, Consumable, BuildConsumable, PurchasePlan
 from django.utils import timezone
+from .models import InventoryItem, Build, Sale, Consumable, PurchasePlan
 
 class InventoryItemForm(forms.ModelForm):
     class Meta:
@@ -19,21 +19,40 @@ class InventoryItemForm(forms.ModelForm):
 class BuildForm(forms.ModelForm):
     class Meta:
         model = Build
-        fields = ["title", "description", "listing_url", "cover_image", "status"]
+        fields = ["title", "category", "status", "description", "listing_url", "cover_image"]
         labels = {
             "title": "Название_сборки",
-            "description": "Техническое_задание",
+            "category": "Тип_конфигурации",
+            "status": "Статус_проекта",
+            "description": "Техническое_задание / Заметки",
             "listing_url": "URL_объявления",
             "cover_image": "Фронтальное_фото",
-            "status": "Статус_проекта",
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono', 'placeholder': 'Например: Gaming Beast i5-12400F'}),
+            'category': forms.Select(attrs={'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono appearance-none'}),
+            'status': forms.Select(attrs={'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono appearance-none'}),
+            'description': forms.Textarea(attrs={'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono', 'rows': 4}),
+            'listing_url': forms.URLInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono'}),
+            'cover_image': forms.FileInput(attrs={'class': 'block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer bg-slate-50 rounded-xl border border-slate-200'}),
         }
 
+# --- ОБНОВЛЕННАЯ ФОРМА КОМПЛЕКТУЮЩИХ (Светлая) ---
 class AddItemToBuildForm(forms.Form):
     item = forms.ModelChoiceField(
         queryset=InventoryItem.objects.filter(status="in_stock"),
-        label="Выбор_юнита"
+        label="Выбор_юнита",
+        widget=forms.Select(attrs={
+            'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono appearance-none'
+        })
     )
-    qty = forms.IntegerField(min_value=1, initial=1, label="QTY")
+    qty = forms.IntegerField(
+        min_value=1, initial=1, label="QTY",
+        widget=forms.NumberInput(attrs={
+            'class': 'w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono',
+            'placeholder': '1'
+        })
+    )
 
 class SaleForm(forms.ModelForm):
     class Meta:
@@ -48,20 +67,13 @@ class SaleForm(forms.ModelForm):
         }
         widgets = {
             'sold_at': forms.DateTimeInput(
-                attrs={
-                    'type': 'datetime-local',
-                    'class': 'w-full p-3 rounded-xl bg-slate-50 border-none font-mono text-sm'
-                },
+                attrs={'type': 'datetime-local', 'class': 'w-full p-3 rounded-xl bg-slate-50 border-none font-mono text-sm'},
                 format='%Y-%m-%dT%H:%M'
             ),
         }
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Показываем только те сборки, которые еще не проданы
         self.fields['build'].queryset = Build.objects.exclude(status="sold")
-        
-        # АВТО-ДАТА: Если форма пустая (создание), ставим текущее время
         if not self.instance.pk:
             self.fields['sold_at'].initial = timezone.now()
 
@@ -76,20 +88,26 @@ class ConsumableForm(forms.ModelForm):
             "notes": "Заметки_по_кастому",
         }
 
+# --- ОБНОВЛЕННАЯ ФОРМА КАСТОМА (Тёмная) ---
 class AddConsumableToBuildForm(forms.Form):
     consumable = forms.ModelChoiceField(
         queryset=Consumable.objects.filter(quantity__gt=0),
-        label="Материал"
+        label="Материал",
+        # Темные стили для селекта
+        widget=forms.Select(attrs={
+            'class': 'w-full bg-slate-800 border border-slate-700 text-white text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono appearance-none'
+        })
     )
-    qty_used = forms.IntegerField(min_value=1, initial=1, label="Кол-во")
+    qty_used = forms.IntegerField(
+        min_value=1, initial=1, label="Кол-во",
+        # Темные стили для инпута
+        widget=forms.NumberInput(attrs={
+            'class': 'w-full bg-slate-800 border border-slate-700 text-white text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-mono font-bold',
+            'placeholder': '1'
+        })
+    )
 
 class PurchasePlanForm(forms.ModelForm):
     class Meta:
         model = PurchasePlan
         fields = ["item_name", "expected_price", "is_bought", "notes"]
-        labels = {
-            "item_name": "Что нужно купить",
-            "expected_price": "Ожидаемая цена",
-            "is_bought": "Куплено",
-            "notes": "Заметки",
-        }

@@ -1,58 +1,65 @@
-{% extends "base.html" %}
-{% block title %}Сборки | Проекты{% endblock %}
-{% block content %}
+{% extends 'base.html' %}
 
-<div class="flex items-center justify-between mb-8">
-  <div>
-    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Сборки <span class="text-indigo-600">/</span></h1>
-    <p class="text-slate-500 font-medium font-mono text-[10px] uppercase mt-1">Активных сборок: {{ builds.count }}</p>
+{% block title %}Все проекты | PC Upgrade{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+  <div class="text-center md:text-left">
+    <h1 class="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter italic">
+        Сборки <span class="text-indigo-600">/</span> Builds
+    </h1>
+    <p class="text-slate-500 font-medium font-mono text-[10px] uppercase mt-1 italic font-bold">Управление проектами ПК</p>
   </div>
-  <a class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2" href="{% url 'build_add' %}">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    Создать сборку
+  <a class="w-full md:w-auto px-6 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all shadow-xl flex items-center justify-center gap-2 border border-slate-700 font-mono text-xs uppercase" href="{% url 'build_add' %}">
+    <span class="text-indigo-400">></span> Новый_проект
   </a>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  {% for b in builds %}
-    <a href="{% url 'build_detail' b.id %}" class="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
-      <div class="relative h-56 bg-slate-200 overflow-hidden">
-        {% if b.cover_image %}
-          <img src="{{ b.cover_image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        {% else %}
-          <div class="w-full h-full flex items-center justify-center text-slate-400 italic font-mono text-[10px]">NO_IMAGE_DATA</div>
-        {% endif %}
-        <div class="absolute top-4 right-4">
-          <span class="px-3 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider shadow-sm border
-            {% if b.status == 'published' %}bg-green-500 text-white border-green-600{% elif b.status == 'draft' %}bg-amber-400 text-white border-amber-500{% elif b.status == 'sold' %}bg-slate-700 text-white border-slate-800{% else %}bg-slate-100 text-slate-500{% endif %}">
-            {{ b.get_status_display }}
-          </span>
-        </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for build in builds %}
+    <a href="{% url 'build_detail' build.pk %}" class="group relative bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col {% if build.status == 'sold' %}opacity-75 grayscale hover:grayscale-0 hover:opacity-100{% endif %}">
+      
+      <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
+        <span class="w-fit px-3 py-1 rounded-full bg-white/90 backdrop-blur text-[10px] font-bold uppercase tracking-widest shadow-sm border border-slate-100 
+            {% if build.status == 'published' %}text-emerald-600{% elif build.status == 'sold' %}text-slate-500{% else %}text-amber-500{% endif %}">
+            {{ build.get_status_display }}
+        </span>
       </div>
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{{ b.title }}</h3>
-        <div class="mt-4 flex items-center justify-between">
-          <div>
-            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest font-mono italic">Себестоимость</p>
-            <p class="text-lg font-bold text-slate-900 leading-tight font-mono">{{ b.cost }} ₽</p>
-          </div>
-          <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-            <svg class="w-5 h-5 text-slate-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-          </div>
+
+      <div class="absolute top-4 right-4 z-10">
+         <span class="px-2 py-1 rounded-lg bg-indigo-600/90 backdrop-blur text-white text-[9px] font-bold uppercase tracking-widest shadow-sm border border-indigo-500">
+             {{ build.get_category_display }}
+         </span>
+      </div>
+      
+      <div class="h-48 bg-slate-100 overflow-hidden relative">
+        {% if build.cover_image %}
+            <img src="{{ build.cover_image.url }}" alt="{{ build.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center text-slate-300 bg-slate-50">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+        {% endif %}
+        <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent opacity-80"></div>
+      </div>
+
+      <div class="p-6 pt-2 flex-1 flex flex-col">
+        <h3 class="font-black text-xl text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors uppercase italic tracking-tight leading-tight">{{ build.title }}</h3>
+        
+        <div class="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between font-mono">
+           <span class="text-[10px] text-slate-400 uppercase font-bold">Total_Cost:</span>
+           <span class="text-lg font-black text-slate-900">{{ build.cost }} ₽</span>
         </div>
       </div>
     </a>
   {% empty %}
-    <div class="col-span-full py-24 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
-      <div class="flex flex-col items-center justify-center space-y-3">
-        <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 text-slate-300">
-           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-        </div>
-        <p class="text-slate-400 font-medium tracking-tight">Активных сборок не найдено</p>
-        <p class="text-[10px] text-slate-300 font-mono uppercase tracking-widest italic tracking-tighter">Пусто</p>
-      </div>
+    <div class="col-span-full py-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
+       <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-200">
+           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+       </div>
+       <p class="text-slate-400 font-medium tracking-tight">Нет активных проектов</p>
+       <a href="{% url 'build_add' %}" class="text-[10px] text-indigo-500 font-mono uppercase tracking-widest italic mt-2 hover:underline">Создать первую сборку</a>
     </div>
   {% endfor %}
 </div>
-
 {% endblock %}
