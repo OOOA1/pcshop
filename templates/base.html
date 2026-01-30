@@ -25,6 +25,7 @@
         <a class="px-5 py-2 rounded-xl text-sm font-medium transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'inventory_list' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'inventory_list' %}">Склад</a>
         <a class="px-5 py-2 rounded-xl text-sm font-medium transition-all hover:text-indigo-600 {% if 'build' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'build_list' %}">Сборки</a>
         <a class="px-5 py-2 rounded-xl text-sm font-medium transition-all hover:text-indigo-600 {% if 'sale' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'sale_list' %}">Продажи</a>
+        <a class="px-5 py-2 rounded-xl text-sm font-medium transition-all hover:text-indigo-600 {% if 'archive' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'archive_list' %}">Архив</a>
       </nav>
     </header>
 

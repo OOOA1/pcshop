@@ -14,4 +14,7 @@ urlpatterns = [
 
     path("sales/", views.SaleListView.as_view(), name="sale_list"),
     path("sales/add/", views.SaleCreateView.as_view(), name="sale_add"),
+
+    path("archive/", views.ArchiveView.as_view(), name="archive_list"),
+    path("archive/", views.ArchiveListView.as_view(), name="archive_list"),
 ]

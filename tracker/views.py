@@ -25,6 +25,11 @@ class InventoryListView(ListView):
             qs = qs.filter(category=category)
         if q:
             qs = qs.filter(name__icontains=q)
+
+        # Исключаем проданные и списанные товары из основного списка
+        qs = InventoryItem.objects.exclude(
+            status__in=[ItemStatus.SOLD, ItemStatus.WRITTEN_OFF]
+        ).order_by("-created_at")
         return qs
 
 
@@ -54,7 +59,8 @@ class BuildListView(ListView):
     context_object_name = "builds"
 
     def get_queryset(self):
-        return Build.objects.all().order_by("-created_at")
+        # Оставляем только те сборки, статус которых НЕ "Продано"
+        return Build.objects.exclude(status=BuildStatus.SOLD).order_by("-created_at")
 
 
 class BuildCreateView(CreateView):
@@ -159,3 +165,35 @@ class SaleCreateView(CreateView):
 
     def get_success_url(self):
         return reverse("sale_list")
+
+class ArchiveView(ListView):
+    template_name = "tracker/archive_list.html"
+    context_object_name = "sold_builds"
+
+    def get_queryset(self):
+            # Добавляем prefetch_related, чтобы подтянуть детали для модалок
+            return Build.objects.filter(status=BuildStatus.SOLD).prefetch_related('build_items__item').order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем в контекст комплектующие, проданные вне сборок
+        context['sold_items'] = InventoryItem.objects.filter(
+            status=ItemStatus.SOLD
+        ).exclude(build_links__build__status=BuildStatus.SOLD)
+        return context
+
+class ArchiveListView(ListView):
+    template_name = "tracker/archive_list.html" # Создадим этот шаблон ниже
+    context_object_name = "sold_builds"
+
+    def get_queryset(self):
+            # Добавляем prefetch_related, чтобы подтянуть детали для модалок
+            return Build.objects.filter(status=BuildStatus.SOLD).prefetch_related('build_items__item').order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем отдельно проданные комплектующие (которые не в сборках)
+        context['sold_items'] = InventoryItem.objects.filter(
+            status=ItemStatus.SOLD
+        ).exclude(build_links__build__status=BuildStatus.SOLD)
+        return context

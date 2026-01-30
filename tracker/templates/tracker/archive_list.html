@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Архив_продаж{% endblock %}
+{% block content %}
+
+<div class="space-y-12">
+  <section>
+    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter mb-6 italic">
+      <span class="text-indigo-600">#</span> Сборки_Архив
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for b in sold_builds %}
+        <div onclick="openModal('modal-{{ b.id }}')" class="cursor-pointer group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm grayscale-[0.5] hover:grayscale-0 hover:border-indigo-300 transition-all">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[10px] font-mono text-indigo-500 font-bold uppercase">Завершено</span>
+            <span class="text-[10px] font-mono text-slate-400">#{{ b.id }}</span>
+          </div>
+          <h3 class="font-bold text-slate-800 group-hover:text-indigo-600">{{ b.title }}</h3>
+          <p class="text-xs text-slate-400 mt-2 font-mono">Себестоимость: {{ b.cost }} ₽</p>
+        </div>
+
+        <div id="modal-{{ b.id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4" onclick="closeModal('modal-{{ b.id }}')">
+          <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+            <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
+              <h2 class="text-xl font-black uppercase tracking-tight">{{ b.title }}</h2>
+              <button onclick="closeModal('modal-{{ b.id }}')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="p-8 space-y-6">
+              {% if b.cover_image %}
+                <img src="{{ b.cover_image.url }}" class="w-full h-48 object-cover rounded-2xl">
+              {% endif %}
+              
+              <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">_Состав_системы</label>
+                <div class="mt-3 border rounded-xl overflow-hidden">
+                  <table class="w-full text-xs font-mono text-left">
+                    <tbody class="divide-y">
+                      {% for bi in b.build_items.all %}
+                        <tr>
+                          <td class="p-3 bg-slate-50 text-slate-500">{{ bi.item.get_category_display }}</td>
+                          <td class="p-3 font-bold">{{ bi.item.name }}</td>
+                          <td class="p-3 text-right">x{{ bi.qty }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-400 font-mono uppercase">Итоговая_стоимость:</span>
+                <span class="text-2xl font-black text-indigo-600 font-mono">{{ b.cost }} ₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<script>
+  function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  }
+  // Закрытие по Esc
+  document.onkeydown = function(e) {
+    if (e.key === "Escape") {
+      document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+      document.body.style.overflow = 'auto';
+    }
+  };
+</script>
+
+{% endblock %}
