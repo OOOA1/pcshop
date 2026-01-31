@@ -27,7 +27,7 @@
           </div>
           <div>
             <span class="text-xl md:text-2xl font-black tracking-tighter text-slate-900 uppercase italic">PC<span class="text-indigo-600">Upgrade</span></span>
-            <p class="text-[10px] font-mono text-slate-400 font-bold leading-none uppercase tracking-widest mt-0.5 md:mt-1">v2.3_final</p>
+            <!-- <p class="text-[10px] font-mono text-slate-400 font-bold leading-none uppercase tracking-widest mt-0.5 md:mt-1">v2.3_final</p> -->
           </div>
         </div>
 
@@ -38,14 +38,14 @@
         </button>
 
         <nav class="hidden md:flex items-center p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm font-mono text-[11px] uppercase font-bold italic">
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'dashboard' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'dashboard' %}">_Аналитика</a>
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'inventory_list' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'inventory_list' %}">_Склад</a>
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'build' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'build_list' %}">_Сборки</a>
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'consumable' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'consumable_list' %}">_Расходники</a>
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'purchase' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'purchase_list' %}">_Купить</a>
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'sale' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'sale_list' %}">_Продажи</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'dashboard' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'dashboard' %}">Аналитика</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if request.resolver_match.url_name == 'inventory_list' %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'inventory_list' %}">Склад</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'build' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'build_list' %}">Сборки</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'consumable' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'consumable_list' %}">Кастом</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'purchase' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'purchase_list' %}">Купить</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'sale' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'sale_list' %}">Продажи</a>
            <div class="w-px h-4 bg-slate-200 mx-2"></div>
-           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'archive' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'archive_list' %}">_Архив</a>
+           <a class="px-4 py-2 rounded-xl transition-all hover:text-indigo-600 {% if 'archive' in request.resolver_match.url_name %}bg-slate-100 text-indigo-600 shadow-inner{% endif %}" href="{% url 'archive_list' %}">Архив</a>
         </nav>
       </div>
 

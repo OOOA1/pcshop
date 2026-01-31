@@ -11,12 +11,15 @@
           Оформление сделки
       {% endif %}
     </h1>
-    <p class="text-slate-500 font-mono text-[10px] mt-1 uppercase">/root/sales/new_transaction</p>
+    <!-- <p class="text-slate-500 font-mono text-[10px] mt-1 uppercase">/root/sales/new_transaction</p> -->
   </div>
   <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
     <form method="post" class="p-8 space-y-6">
       {% csrf_token %}
+      
+      {# Выводим форму. Django сам расставит поля из forms.py #}
       {{ form.as_p }}
+      
       <div class="pt-6 border-t border-slate-50 flex justify-between">
         <a href="{% url 'sale_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono mt-3 block">Отмена</a>
         <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase hover:bg-indigo-700 transition-all shadow-lg">Подтвердить продажу</button>
@@ -24,4 +27,35 @@
     </form>
   </div>
 </div>
+
+<script>
+    // Скрипт для авто-расчета комиссии
+    document.addEventListener("DOMContentLoaded", function() {
+        const priceInput = document.getElementById('id_sold_price');
+        const percentInput = document.getElementById('id_fees_percentage');
+        const feesInput = document.getElementById('id_fees');
+
+        function calculateFees() {
+            const price = parseFloat(priceInput.value) || 0;
+            const percent = parseFloat(percentInput.value) || 0;
+
+            if (percent > 0) {
+                // Считаем комиссию: (Цена * Процент) / 100
+                const calculatedFee = (price * percent) / 100;
+                // Записываем в поле рублей, округляя до 2 знаков
+                feesInput.value = calculatedFee.toFixed(2);
+            } else if (percent === 0 && feesInput.value === "") {
+                 // Если процент стерли или он 0, можно обнулить комиссию (опционально)
+                 // feesInput.value = 0;
+            }
+        }
+
+        if (priceInput && percentInput && feesInput) {
+            // Слушаем ввод в поле цены
+            priceInput.addEventListener('input', calculateFees);
+            // Слушаем ввод в поле процента
+            percentInput.addEventListener('input', calculateFees);
+        }
+    });
+</script>
 {% endblock %}

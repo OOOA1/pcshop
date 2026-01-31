@@ -5,9 +5,9 @@
 <div class="max-w-2xl mx-auto">
   <div class="mb-8">
     <h1 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">
-      <span class="text-indigo-600">></span> Планирование_закупки
+      <span class="text-indigo-600">></span> Планирование закупки
     </h1>
-    <p class="text-slate-500 font-mono text-[10px] mt-1">/root/shopping_list/add_item</p>
+    <!-- <p class="text-slate-500 font-mono text-[10px] mt-1">/root/shopping_list/add_item</p> -->
   </div>
 
   <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
@@ -22,24 +22,24 @@
       {% csrf_token %}
       
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">_Наименование_детали</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">Наименование детали</label>
         {{ form.item_name }}
       </div>
 
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">_Ориентировочный_бюджет (₽)</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">Ориентировочный бюджет (₽)</label>
         {{ form.expected_price }}
       </div>
 
       <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">_Заметки/Ссылка</label>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono italic">Заметки/Ссылка</label>
         {{ form.notes }}
       </div>
 
       <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
         <a href="{% url 'purchase_list' %}" class="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase font-mono">Назад</a>
         <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase hover:bg-indigo-700 transition-all shadow-lg">
-          Добавить_в_список
+          Добавить в  список
         </button>
       </div>
     </form>

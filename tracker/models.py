@@ -83,13 +83,18 @@ class Sale(models.Model):
     # Теперь ссылка на сборку может быть пустой
     build = models.ForeignKey(Build, on_delete=models.CASCADE, related_name="sale_record", null=True, blank=True)
     
-    # Новое поле: ссылка на деталь (для продажи по частям)
+    # Ссылка на деталь (для продажи по частям)
     item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name="sale_record", null=True, blank=True)
     
-    sold_price = models.DecimalField(max_digits=10, decimal_places=2)
-    fees = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    sold_at = models.DateTimeField()
-    notes = models.TextField(blank=True, null=True)
+    sold_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена продажи")
+    
+    # --- НОВОЕ ПОЛЕ: Комиссия в процентах ---
+    fees_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="Комиссия %")
+    # ----------------------------------------
+
+    fees = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Комиссия (руб)")
+    sold_at = models.DateTimeField(verbose_name="Дата продажи")
+    notes = models.TextField(blank=True, null=True, verbose_name="Заметки")
 
     @property
     def profit(self):
@@ -102,11 +107,16 @@ class Sale(models.Model):
         return 0
 
     def save(self, *args, **kwargs):
+        # АВТОМАТИЧЕСКИЙ РАСЧЕТ КОМИССИИ
+        # Если указан процент больше 0, пересчитываем поле fees (в рублях)
+        if self.fees_percentage is not None and self.fees_percentage > 0:
+            self.fees = self.sold_price * (self.fees_percentage / 100)
+            
         is_new = self.pk is None
         super().save(*args, **kwargs)
         
         if is_new:
-            # Логика для сборки
+            # Логика для сборки: меняем статус на SOLD
             if self.build:
                 self.build.status = BuildStatus.SOLD
                 self.build.save()
@@ -114,7 +124,7 @@ class Sale(models.Model):
                     bi.item.status = ItemStatus.SOLD
                     bi.item.save()
             
-            # Логика для отдельной детали
+            # Логика для отдельной детали: меняем статус на SOLD
             elif self.item:
                 self.item.status = ItemStatus.SOLD
                 self.item.save()
@@ -146,3 +156,4 @@ class PurchasePlan(models.Model):
 
     def __str__(self):
         return self.item_name
+
