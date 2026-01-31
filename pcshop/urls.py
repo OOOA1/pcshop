@@ -4,8 +4,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("tracker.urls")),
+    path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')), # Добавляет login/logout
+    path('', include('tracker.urls')),
 ]
 
 if settings.DEBUG:

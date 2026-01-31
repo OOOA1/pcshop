@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-narrow">
+    <div class="card">
+        <h2 style="text-align: center;">Вход в систему</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <ul class="errorlist">
+                    <li>Неверное имя пользователя или пароль.</li>
+                </ul>
+            {% endif %}
+
+            <div style="margin-bottom: 1.25rem;">
+                <label for="{{ form.username.id_for_label }}">Логин</label>
+                {{ form.username }}
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="{{ form.password.id_for_label }}">Пароль</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+    
+    <div style="text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.85rem;">
+        Доступ только для администраторов
+    </div>
+</div>
+{% endblock %}
