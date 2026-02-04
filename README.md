@@ -110,7 +110,7 @@ python manage.py runserver
 
 <img width="593" height="648" alt="image" src="https://github.com/user-attachments/assets/b331db3b-7090-4d1c-8b5c-4c47636890b4" />
 
-<img width="535" height="401" alt="image" src="https://github.com/user-attachments/assets/ac7d90ab-cf4d-47b5-bd0b-ad410e7b2ca5" />
+<img width="843" height="541" alt="image" src="https://github.com/user-attachments/assets/34729f22-5076-41c3-8a89-cea0d4b0b002" />
 
 <img width="721" height="313" alt="image" src="https://github.com/user-attachments/assets/d7552bfb-a5ed-48a2-8e4c-440bf5bf249c" />
 
